@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import logo from "@/assets/N60-2Stack-Full.png";
 import { navLinks } from "@/data/links";
+import { scrollToTop } from "@/utils/scrollToTop";
 
 function Footer() {
   return (
@@ -8,7 +9,7 @@ function Footer() {
       <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-5 gap-8">
         {/* Logo / Branding */}
         <div className="flex flex-col items-start">
-          <Link to="/">
+          <Link to="/" onClick={scrollToTop}>
             <img src={logo} alt="Northwest Logo" className="h-12 w-auto mb-4" />
           </Link>
           <p className="text-sm text-gray-600">

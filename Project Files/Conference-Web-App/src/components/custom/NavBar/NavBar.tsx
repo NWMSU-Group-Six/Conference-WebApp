@@ -9,12 +9,9 @@ import {
 } from "@/components/ui/navigation-menu";
 import logo from "@/assets/N60-2Stack-Full.png";
 import { navLinks } from "@/data/links.ts";
+import { scrollToTop } from "@/utils/scrollToTop";
 
 function NavBar() {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  };
-
   return (
     <div className="w-full border-b bg-white shadow-md fixed top-0 left-0 z-50">
       <div className="flex items-center justify-between max-w-7xl mx-auto px-6 py-4">

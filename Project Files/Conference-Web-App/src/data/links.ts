@@ -23,4 +23,8 @@ export const navLinks = [
     label: "Contact",
     href: "/contact",
   },
+  {
+    label: "Login",
+    href: "/login",
+  },
 ];
