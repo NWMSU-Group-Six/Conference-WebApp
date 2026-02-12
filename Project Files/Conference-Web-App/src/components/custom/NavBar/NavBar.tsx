@@ -8,20 +8,17 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import logo from "@/assets/N60-2Stack-Full.png";
+import { navLinks } from "@/data/links.ts";
 
 function NavBar() {
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   };
 
   return (
     <div className="w-full border-b bg-white shadow-md fixed top-0 left-0 z-50">
       <div className="flex items-center justify-between max-w-7xl mx-auto px-6 py-4">
-        {/* Logo - Always Links Home */}
+        {/* Logo */}
         <Link to="/" onClick={scrollToTop}>
           <img
             src={logo}
@@ -36,64 +33,30 @@ function NavBar() {
         {/* Navigation */}
         <NavigationMenu>
           <NavigationMenuList>
-            {/* About Dropdown */}
-            <NavigationMenuItem>
-              <NavigationMenuTrigger>About</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid gap-2 p-4 w-48">
-                  <li>
-                    <NavigationMenuLink asChild>
-                      <Link to="/general-info">General Info</Link>
-                    </NavigationMenuLink>
-                  </li>
-                  <li>
-                    <NavigationMenuLink asChild>
-                      <Link to="/pricing">Pricing</Link>
-                    </NavigationMenuLink>
-                  </li>
-                  <li>
-                    <NavigationMenuLink asChild>
-                      <Link to="/faq">FAQ</Link>
-                    </NavigationMenuLink>
-                  </li>
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-
-            {/* Agenda */}
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link to="/agenda">Agenda</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            {/* Speakers */}
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link to="/speakers">Speakers</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            {/* Sponsors */}
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link to="/sponsors">Sponsors</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            {/* Contact */}
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link to="/contact">Contact</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            {/* Login */}
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link to="/login">Login</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
+            {navLinks.map((item) => (
+              <NavigationMenuItem key={item.label}>
+                {item.dropdown ? (
+                  <>
+                    <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <ul className="grid gap-2 p-4 w-48">
+                        {item.dropdown.map((sub) => (
+                          <li key={sub.label}>
+                            <NavigationMenuLink asChild>
+                              <Link to={sub.href}>{sub.label}</Link>
+                            </NavigationMenuLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </NavigationMenuContent>
+                  </>
+                ) : (
+                  <NavigationMenuLink asChild>
+                    <Link to={item.href}>{item.label}</Link>
+                  </NavigationMenuLink>
+                )}
+              </NavigationMenuItem>
+            ))}
           </NavigationMenuList>
         </NavigationMenu>
       </div>

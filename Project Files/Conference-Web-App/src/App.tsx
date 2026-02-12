@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import NavBar from "@/components/custom/NavBar";
+import Footer from "@/components/custom/Footer";
 
 function App() {
   return (
@@ -14,6 +15,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
         </Routes>
+      </div>
+      <div className="flex flex-col items-center justify-center">
+        <Footer />
       </div>
     </>
   );
