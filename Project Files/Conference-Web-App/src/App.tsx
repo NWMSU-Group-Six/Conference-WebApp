@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Speakers from "./pages/Speakers";
 import NavBar from "@/components/custom/NavBar";
 import Footer from "@/components/custom/Footer";
 
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/speakers" element={<Speakers />} />
         </Routes>
       </div>
       <div className="flex flex-col items-center justify-center">
