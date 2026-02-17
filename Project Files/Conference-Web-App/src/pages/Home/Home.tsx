@@ -1,4 +1,5 @@
 import styles from "./Home.module.css";
+import { Link } from "react-router-dom";
 
 function Home() {
   return (
@@ -24,7 +25,9 @@ function Home() {
             Share your innovative ideas and contribute to the advancement of knowledge 
             in your field.
           </p>
-          <button className={styles.submitButton}>Submit Paper</button>
+          <Link to="/submission">
+            <button className={styles.submitButton}>Submit Paper</button>
+          </Link>
         </div>
       </section>
 
