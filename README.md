@@ -15,4 +15,13 @@ This folder is for any documents that need to be shared between the team that do
 ---
 
 ## Project Files  
-All program files will be found under this folder.   
+All program files will be found under this folder.
+
+## How to Setup and Run
+run npm install and run npm run dev
+
+## How to Setup and Run
+
+```bash
+npm install
+npm run dev
