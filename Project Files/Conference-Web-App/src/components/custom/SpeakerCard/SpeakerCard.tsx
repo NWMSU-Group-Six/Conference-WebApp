@@ -1,36 +1,27 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardAction,
+  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 
-function SpeakerCard() {
+function SpeakerCard({ speaker }) {
   return (
-    <Card className="relative mx-auto w-full max-w-sm pt-0 overflow-hidden">
-      <div className="absolute inset-0 z-30 aspect-video bg-black/35" />
-      <img
-        src="https://avatar.vercel.sh/shadcn1"
-        alt="Event cover"
-        className="relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
-      />
-      <CardHeader>
-        <CardAction>
-          <Badge variant="secondary">Featured</Badge>
-        </CardAction>
-        <CardTitle>Design systems meetup</CardTitle>
-        <CardDescription>
-          A practical talk on component APIs, accessibility, and shipping
-          faster.
-        </CardDescription>
-      </CardHeader>
-      <CardFooter>
-        <Button className="w-full">View Event</Button>
-      </CardFooter>
+    <Card className="mx-auto w-full max-w-sm overflow-hidden transition hover:shadow-lg">
+      <div className="aspect-video w-full overflow-hidden">
+        <img
+          src={speaker.image}
+          alt={speaker.name}
+          className="h-full w-full object-cover"
+        />
+      </div>
+
+      <CardContent className="space-y-1 p-4">
+        <CardTitle>{speaker.name}</CardTitle>
+        <p className="text-sm text-muted-foreground">{speaker.title}</p>
+        <CardDescription>{speaker.bio}</CardDescription>
+      </CardContent>
     </Card>
   );
 }
