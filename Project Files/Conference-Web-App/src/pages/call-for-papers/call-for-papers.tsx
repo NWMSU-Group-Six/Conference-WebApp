@@ -30,7 +30,7 @@ export default function CallForPapers() {
       </section>
 
       {/* Deadlines */}
-      <section className="deadlines-section">
+      <section id="deadlines" className="deadlines-section">
         <div className="cfp-container">
           <h2 className="section-heading">Important Deadlines</h2>
 
