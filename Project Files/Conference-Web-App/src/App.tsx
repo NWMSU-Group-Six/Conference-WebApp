@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Speakers from "./pages/Speakers";
 import NavBar from "@/components/custom/NavBar";
 import Footer from "@/components/custom/Footer";
+import CallForPapers from "./pages/call-for-papers/call-for-papers";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/speakers" element={<Speakers />} />
+          <Route path="/call-for-papers" element={<CallForPapers />} />
         </Routes>
       </div>
       <div className="flex flex-col items-center justify-center">
