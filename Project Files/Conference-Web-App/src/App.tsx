@@ -12,7 +12,7 @@ function App() {
       <div className="flex flex-col items-center justify-center">
         <NavBar />
       </div>
-      <div className="pt-25">
+      <div className="pt-20">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
