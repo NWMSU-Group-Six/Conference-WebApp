@@ -89,7 +89,7 @@ export default function CallForPapers() {
             review the guidelines before submitting.
           </p>
 
-          <Link to="/submission-portal" className="submit-button">
+          <Link to="/submission" className="submit-button">
             Submit Your Paper
           </Link>
 

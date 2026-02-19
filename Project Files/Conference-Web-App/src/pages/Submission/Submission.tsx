@@ -8,12 +8,12 @@ export default function Submission() {
   return (
     <div>
       {/* Hero / Banner */}
-      <section className={`${styles.hero} py-16 text-white`}>
-        <div className={styles.container}>
-          <h1 className="text-center text-4xl font-bold tracking-tight">
+      <section className="hero-section">
+        <div className="cfp-container">
+          <h1 className="main-heading">
             Paper Submission
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-white/80">
+          <p className="subtitle">
             Submit your full paper (PDF) for Northwest Conference 2026.
           </p>
         </div>
