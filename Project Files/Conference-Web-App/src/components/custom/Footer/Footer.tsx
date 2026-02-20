@@ -26,6 +26,7 @@ function Footer() {
                 item.dropdown.map((sub) => (
                   <li key={sub.label}>
                     <Link
+                      onClick={scrollToTop}
                       to={sub.href}
                       className="hover:text-primary transition"
                     >
@@ -36,6 +37,7 @@ function Footer() {
               ) : (
                 <li>
                   <Link
+                    onClick={scrollToTop}
                     to={item.href}
                     className="hover:text-primary transition"
                   >
