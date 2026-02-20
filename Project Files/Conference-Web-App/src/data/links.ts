@@ -1,27 +1,28 @@
 export const navLinks = [
   {
-    label: "About",
-    href: "/about",
+    label: "Home",
+    href: "/",
   },
   {
-    label: "Conference",
+    label: "Participate",
     dropdown: [
-      { label: "Call for Papers", href: "/call-for-papers" },
-      { label: "Schedule", href: "/schedule" },
-      { label: "Speakers", href: "/speakers" },
+      { label: "Register", href: "/register" },
+      { label: "Submit", href: "/submit" },
+      { label: "Deadlines", href: "/submit#deadlines" },
     ],
   },
   {
-    label: "Registration",
+    label: "Conference Info",
     dropdown: [
-      { label: "Register", href: "/register" },
-      { label: "Fees", href: "/fees" },
+      { label: "Speakers", href: "/speakers" },
+      { label: "Committee", href: "/committee" },
+      { label: "Sponsors", href: "/sponsors" },
       { label: "FAQ", href: "/faq" },
     ],
   },
   {
-    label: "Contact",
-    href: "/contact",
+    label: "Schedule",
+    href: "/schedule",
   },
   {
     label: "Login",
