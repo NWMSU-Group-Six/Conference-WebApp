@@ -7,8 +7,8 @@ export const navLinks = [
     label: "Participate",
     dropdown: [
       { label: "Register", href: "/register" },
-      { label: "Submit", href: "/call-for-papers" },
-      { label: "Deadlines", href: "/call-for-papers#deadlines" },
+      { label: "Submit", href: "/submit" },
+      { label: "Deadlines", href: "/submit#deadlines" },
     ],
   },
   {

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import "./call-for-papers.css";
+import "./Submit.css";
 
-export default function CallForPapers() {
+export default function Submit() {
   return (
     <div className="call-for-papers">
       {/* Hero Section */}
@@ -33,7 +33,6 @@ export default function CallForPapers() {
       <section id="deadlines" className="deadlines-section">
         <div className="cfp-container">
           <h2 className="section-heading">Important Deadlines</h2>
-
           <div className="deadline-grid">
             <div className="deadline-box">
               <h3>Paper Submission Deadline</h3>
