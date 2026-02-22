@@ -7,6 +7,7 @@ import Footer from "@/components/custom/Footer";
 import Submit from "./pages/Submit";
 import ScrollToHash from "./utils/scrollToHash";
 import Schedule from "./pages/Schedule";
+import Committee from "./pages/Committee";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/speakers" element={<Speakers />} />
           <Route path="/submit" element={<Submit />} />
           <Route path="/schedule" element={<Schedule />} />
+          <Route path="/committee" element={<Committee />} />
         </Routes>
       </div>
       <div className="flex flex-col items-center justify-center">
