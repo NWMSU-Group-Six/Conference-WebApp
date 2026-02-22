@@ -6,6 +6,7 @@ import NavBar from "@/components/custom/NavBar";
 import Footer from "@/components/custom/Footer";
 import Submit from "./pages/Submit";
 import ScrollToHash from "./utils/scrollToHash";
+import Schedule from "./pages/Schedule";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/speakers" element={<Speakers />} />
           <Route path="/submit" element={<Submit />} />
+          <Route path="/schedule" element={<Schedule />} />
         </Routes>
       </div>
       <div className="flex flex-col items-center justify-center">
