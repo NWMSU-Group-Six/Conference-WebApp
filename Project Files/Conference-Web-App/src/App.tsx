@@ -8,6 +8,7 @@ import Submit from "./pages/Submit";
 import ScrollToHash from "./utils/scrollToHash";
 import Schedule from "./pages/Schedule";
 import Committee from "./pages/Committee";
+import Sponsors from "./pages/Sponsors";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/submit" element={<Submit />} />
           <Route path="/schedule" element={<Schedule />} />
           <Route path="/committee" element={<Committee />} />
+          <Route path="/sponsors" element={<Sponsors />} />
         </Routes>
       </div>
       <div className="flex flex-col items-center justify-center">
