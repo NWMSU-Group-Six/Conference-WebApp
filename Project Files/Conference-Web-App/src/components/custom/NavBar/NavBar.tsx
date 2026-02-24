@@ -40,7 +40,9 @@ function NavBar() {
                         {item.dropdown.map((sub) => (
                           <li key={sub.label}>
                             <NavigationMenuLink asChild>
-                              <Link to={sub.href}>{sub.label}</Link>
+                              <Link to={sub.href} onClick={scrollToTop}>
+                                {sub.label}
+                              </Link>
                             </NavigationMenuLink>
                           </li>
                         ))}
@@ -49,7 +51,9 @@ function NavBar() {
                   </>
                 ) : (
                   <NavigationMenuLink asChild>
-                    <Link to={item.href}>{item.label}</Link>
+                    <Link to={item.href} onClick={scrollToTop}>
+                      {item.label}
+                    </Link>
                   </NavigationMenuLink>
                 )}
               </NavigationMenuItem>

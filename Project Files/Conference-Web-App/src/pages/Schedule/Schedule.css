@@ -1,0 +1,254 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.schedule-page {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Reusing shared classes from Submit.css — hero-section, cfp-container,
+   main-heading, subtitle are already defined there. These are page-specific overrides: */
+
+/* Hero Section (matches Submit.css pattern) */
+.hero-section {
+  background: #006a4e;
+  color: #fff;
+  padding: 80px 20px;
+  text-align: center;
+  position: relative;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 106, 78, 0.95) 0%,
+    rgba(0, 80, 60, 0.98) 100%
+  );
+  z-index: 0;
+}
+
+.hero-section .cfp-container {
+  position: relative;
+  z-index: 1;
+}
+
+.main-heading {
+  font-size: 3rem;
+  margin: 0 0 20px 0;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  max-width: 700px;
+  margin: 0 auto 16px;
+  line-height: 1.8;
+  opacity: 0.95;
+}
+
+.schedule-dates {
+  font-size: 1rem;
+  opacity: 0.85;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.cfp-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Notice Banner */
+.schedule-notice-section {
+  background-color: #fffbea;
+  border-bottom: 1px solid #f6e05e;
+  padding: 16px 20px;
+}
+
+.schedule-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: #744210;
+}
+
+.schedule-notice p {
+  margin: 0;
+}
+
+/* Schedule Day Section */
+.schedule-day-section {
+  padding: 60px 20px;
+}
+
+.schedule-day-section:nth-child(odd) {
+  background-color: #f8f9fa;
+}
+
+.schedule-day-section:nth-child(even) {
+  background-color: #ffffff;
+}
+
+/* Day Header */
+.day-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 14px;
+  border-bottom: 3px solid #006a4e;
+}
+
+.day-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #006a4e;
+  margin: 0;
+}
+
+.day-date {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Session Rows */
+.sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.session-row {
+  display: grid;
+  grid-template-columns: 200px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 8px;
+  border-left: 4px solid transparent;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s;
+}
+
+.session-row:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Border colors by type */
+.session-keynote {
+  border-left-color: #006a4e;
+}
+
+.session-session {
+  border-left-color: #3182ce;
+}
+
+.session-panel {
+  border-left-color: #805ad5;
+}
+
+.session-break {
+  border-left-color: #d69e2e;
+  background-color: #fefce8;
+}
+
+/* Session Time */
+.session-time {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
+}
+
+/* Session Info */
+.session-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.session-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+.session-speaker {
+  font-size: 0.88rem;
+  color: #006a4e;
+  margin: 0;
+  font-style: italic;
+}
+
+.session-location {
+  font-size: 0.82rem;
+  color: #888;
+  margin: 0;
+}
+
+/* Badge */
+.session-badge-wrapper {
+  text-align: right;
+}
+
+.session-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.badge-keynote {
+  background-color: #c6f6d5;
+  color: #276749;
+}
+
+.badge-session {
+  background-color: #bee3f8;
+  color: #2c5282;
+}
+
+.badge-panel {
+  background-color: #e9d8fd;
+  color: #553c9a;
+}
+
+.badge-break {
+  background-color: #fefcbf;
+  color: #744210;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main-heading {
+    font-size: 2.2rem;
+  }
+
+  .session-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .session-badge-wrapper {
+    text-align: left;
+  }
+
+  .day-header {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

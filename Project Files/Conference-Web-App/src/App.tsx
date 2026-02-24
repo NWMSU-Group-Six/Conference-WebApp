@@ -4,8 +4,12 @@ import Login from "./pages/Login";
 import Speakers from "./pages/Speakers";
 import NavBar from "@/components/custom/NavBar";
 import Footer from "@/components/custom/Footer";
-import CallForPapers from "./pages/call-for-papers/call-for-papers";
-import Submission from "@/pages/Submission/Submission";
+import Submit from "./pages/Submit";
+import ScrollToHash from "./utils/scrollToHash";
+import Schedule from "./pages/Schedule";
+import Committee from "./pages/Committee";
+import Sponsors from "./pages/Sponsors";
+import Submission from "./pages/Submission";
 
 function App() {
   return (
@@ -14,12 +18,16 @@ function App() {
         <NavBar />
       </div>
       <div className="pt-20">
+        <ScrollToHash />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/speakers" element={<Speakers />} />
-          <Route path="/call-for-papers" element={<CallForPapers />} />
+          <Route path="/submit" element={<Submit />} />
+          <Route path="/schedule" element={<Schedule />} />
           <Route path="/submission" element={<Submission />} />
+          <Route path="/committee" element={<Committee />} />
+          <Route path="/sponsors" element={<Sponsors />} />
         </Routes>
       </div>
       <div className="flex flex-col items-center justify-center">
