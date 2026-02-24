@@ -9,6 +9,7 @@ import ScrollToHash from "./utils/scrollToHash";
 import Schedule from "./pages/Schedule";
 import Committee from "./pages/Committee";
 import Sponsors from "./pages/Sponsors";
+import Submission from "./pages/Submission";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/speakers" element={<Speakers />} />
           <Route path="/submit" element={<Submit />} />
           <Route path="/schedule" element={<Schedule />} />
+          <Route path="/submission" element={<Submission />} />
           <Route path="/committee" element={<Committee />} />
           <Route path="/sponsors" element={<Sponsors />} />
         </Routes>
