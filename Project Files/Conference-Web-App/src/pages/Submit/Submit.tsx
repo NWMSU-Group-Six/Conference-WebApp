@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import "./Submit.css";
+import ScrollToHash from "@/utils/scrollToHash";
 
 export default function Submit() {
   return (
@@ -88,7 +89,7 @@ export default function Submit() {
             review the guidelines before submitting.
           </p>
 
-          <Link to="/submission" className="submit-button">
+          <Link to="/submission" onClick={ScrollToHash} className="submit-button">
             Submit Your Paper
           </Link>
 
