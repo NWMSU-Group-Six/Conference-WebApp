@@ -1,4 +1,4 @@
-export { default } from "./TestComponent";
+export { default } from "./NavBar";
 
 /* 
 This file is used to import components more cleanly. 

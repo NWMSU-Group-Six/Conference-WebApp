@@ -1,0 +1,46 @@
+{
+  "speakers": [
+    {
+      "id": 1,
+      "name": "Bill Gates",
+      "title": "Co-founder of Microsoft",
+      "bio": "Bill is a senior software engineer with over 10 years of experience in full-stack development and cloud computing.",
+      "image": "bill-gates.png"
+    },
+    {
+      "id": 2,
+      "name": "Elon Musk",
+      "title": "CEO of Tesla",
+      "bio": "Elon is a product manager specializing in user experience and agile development methodologies.",
+      "image": "elon-musk.png"
+    },
+    {
+      "id": 3,
+      "name": "Jeff Bezos",
+      "title": "Founder of Amazon",
+      "bio": "Jeff is a data scientist with expertise in machine learning and predictive analytics.",
+      "image": "jeff-bezos.png"
+    },
+    {
+      "id": 4,
+      "name": "Mark Zuckerberg",
+      "title": "Founder of Meta",
+      "bio": "Mark is a software engineer with expertise in distributed systems and scalability.",
+      "image": "mark-zuckerberg.png"
+    },
+    {
+      "id": 5,
+      "name": "Steve Jobs",
+      "title": "Founder of Apple",
+      "bio": "Steve is a product designer with expertise in user interface and user experience design.",
+      "image": "steve-jobs.png"
+    },
+    {
+      "id": 6,
+      "name": "Satya Nadella",
+      "title": "CEO of Microsoft",
+      "bio": "Satya is a software engineer with expertise in cloud computing and enterprise software development.",
+      "image": "satya-nadella.png"
+    }
+  ]
+}
