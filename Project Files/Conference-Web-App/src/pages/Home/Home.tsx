@@ -1,4 +1,6 @@
 import styles from "./Home.module.css";
+import ScrollToHash from "@/utils/scrollToHash";
+import { Link } from "react-router-dom";
 
 function Home() {
   return (
@@ -8,10 +10,16 @@ function Home() {
         <div className={styles.heroContent}>
           <h1 className={styles.conferenceTitle}>Northwest Conference 2026</h1>
           <p className={styles.conferenceSubtitle}>
-            Join us for an exciting conference bringing together researchers, 
+            Join us for an exciting conference bringing together researchers,
             academics, and industry professionals
           </p>
-          <button className={styles.registerButton}>Register Now</button>
+          <Link
+            to="/register"
+            onClick={ScrollToHash}
+            className={styles.registerButton}
+          >
+            Register Now
+          </Link>
         </div>
       </section>
 
@@ -20,11 +28,17 @@ function Home() {
         <div className={styles.sectionContent}>
           <h2 className={styles.sectionTitle}>Submit Your Paper</h2>
           <p className={styles.sectionDescription}>
-            We invite researchers and academics to submit their papers for review. 
-            Share your innovative ideas and contribute to the advancement of knowledge 
-            in your field.
+            We invite researchers and academics to submit their papers for
+            review. Share your innovative ideas and contribute to the
+            advancement of knowledge in your field.
           </p>
-          <button className={styles.submitButton}>Submit Paper</button>
+          <Link
+            to="/submit"
+            onClick={ScrollToHash}
+            className={styles.submitButton}
+          >
+            Submit Paper
+          </Link>
         </div>
       </section>
 
