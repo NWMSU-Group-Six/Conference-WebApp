@@ -20,7 +20,7 @@ All program files will be found under this folder.
 ---
 
 ## Firebase
-https://console.firebase.google.com/u/0/project/demoapp-d5efe/overview
+https://console.firebase.google.com/u/0/project/group-six-d0bd8/settings/general/web:NmZlMjI1NTEtZGE3OC00Mjk1LTkyOWMtMWMxODRlZTY1MTgw
 
 ---
 
