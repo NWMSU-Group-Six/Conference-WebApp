@@ -5,7 +5,7 @@ import { scrollToTop } from "@/utils/scrollToTop";
 
 function Footer() {
   return (
-    <footer className="w-full bg-gray-100 border-t mt-10">
+    <footer className="w-full bg-gray-100 border-t">
       <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-5 gap-8">
         {/* Logo / Branding */}
         <div className="flex flex-col items-start">
