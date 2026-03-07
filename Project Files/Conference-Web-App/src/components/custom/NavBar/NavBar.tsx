@@ -10,6 +10,7 @@ import {
 import logo from "@/assets/N60-2Stack-Full.png";
 import { navLinks } from "@/data/links.ts";
 import { scrollToTop } from "@/utils/scrollToTop";
+import scrollToHash from "@/utils/scrollToHash";
 
 function NavBar() {
   return (
@@ -40,7 +41,7 @@ function NavBar() {
                         {item.dropdown.map((sub) => (
                           <li key={sub.label}>
                             <NavigationMenuLink asChild>
-                              <Link to={sub.href} onClick={scrollToTop}>
+                              <Link to={sub.href} onClick={scrollToHash}>
                                 {sub.label}
                               </Link>
                             </NavigationMenuLink>
