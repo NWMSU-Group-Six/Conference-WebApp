@@ -1,4 +1,3 @@
-
 *,
 *::before,
 *::after {
@@ -72,6 +71,7 @@
 }
 .deadlines-section {
   background-color: #ffffff;
+  scroll-margin-top: 80px;
 }
 .submit-section {
   background-color: #f8f9fa;
