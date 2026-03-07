@@ -1,8 +1,19 @@
 import SpeakerCard from "@/components/custom/SpeakerCard";
 import styles from "./Speakers.module.css";
-import speakerData from "@/data/speakers.json";
+import { getDataByCollection } from "@/firebase/db";
+import { useEffect, useState } from "react";
 
 function Speakers() {
+  const [speakers, setSpeakers] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchSpeakers = async () => {
+      const data = await getDataByCollection("speakers");
+      setSpeakers(data);
+    };
+    fetchSpeakers();
+  }, []);
+
   return (
     <>
       {/* Hero Section */}
@@ -17,7 +28,7 @@ function Speakers() {
       </section>
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {speakerData.speakers.map((speaker) => (
+          {speakers.map((speaker) => (
             <SpeakerCard key={speaker.id} speaker={speaker} />
           ))}
         </div>

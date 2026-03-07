@@ -1,6 +1,21 @@
 // Firebase database logic
-import { getFirestore } from "firebase/firestore";
-import { collection, addDoc } from "firebase/firestore";
-import { app } from "./firebase";
+import { getDocs, collection } from "firebase/firestore";
+import { db } from "./firebase";
 
-const db = getFirestore(app);
+export const getDataByCollection = async (collectionName: string) => {
+  try {
+    console.log("Fetching collection:", collectionName);
+    const querySnapshot = await getDocs(collection(db, collectionName));
+    console.log(
+      `Successfully fetched ${querySnapshot.size} documents from ${collectionName}`,
+    );
+
+    return querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  } catch (error) {
+    console.error(`Error fetching ${collectionName} data: `, error);
+    throw error;
+  }
+};
