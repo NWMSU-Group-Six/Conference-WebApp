@@ -7,42 +7,54 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import logo from "@/assets/N60-2Stack-Full.png";
-import { navLinks } from "@/data/links.ts";
-import { scrollToTop } from "@/utils/scrollToTop";
-import scrollToHash from "@/utils/scrollToHash";
+import { navLinks } from "@/data/links";
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
 
 function NavBar() {
   return (
-    <div className="w-full border-b bg-white shadow-md fixed top-0 left-0 z-50">
-      <div className="flex items-center justify-between max-w-7xl mx-auto px-6 py-4">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-[84px]">
         {/* Logo */}
         <Link to="/" onClick={scrollToTop}>
           <img
-            src={logo}
-            alt="Northwest Logo"
-            className="h-15 w-auto object-contain cursor-pointer"
+            src="/images/N-Horiz-Full.png"
+            alt="Northwest Missouri State University"
+            className="h-14 w-auto object-contain"
           />
         </Link>
-        <Link to="/" onClick={scrollToTop}>
-          <h1 className="text-2xl font-semibold">Northwest Conference</h1>
-        </Link>
 
-        {/* Navigation */}
+        {/* Nav Links */}
         <NavigationMenu>
-          <NavigationMenuList>
+          <NavigationMenuList className="flex gap-1">
             {navLinks.map((item) => (
               <NavigationMenuItem key={item.label}>
                 {item.dropdown ? (
                   <>
-                    <NavigationMenuTrigger>{item.label}</NavigationMenuTrigger>
+                    <NavigationMenuTrigger
+                      className="px-4 py-2 text-sm font-semibold text-[#006a4e] 
+                        hover:bg-green-50 hover:text-[#006a4e] 
+                        data-[state=open]:bg-green-50 data-[state=open]:text-[#006a4e]
+                        bg-transparent border-none cursor-pointer transition-colors"
+                    >
+                      {item.label}
+                    </NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <ul className="grid gap-2 p-4 w-48">
-                        {item.dropdown.map((sub) => (
-                          <li key={sub.label}>
+                      <ul className="p-2 w-48 bg-white rounded shadow-lg border">
+                        {item.dropdown.map((child) => (
+                          <li key={child.label}>
                             <NavigationMenuLink asChild>
-                              <Link to={sub.href} onClick={scrollToHash}>
-                                {sub.label}
+                              <Link
+                                to={child.href}
+                                onClick={scrollToTop}
+                                className="block px-4 py-2 text-sm font-medium 
+                                  text-gray-700 rounded 
+                                  hover:bg-green-50 hover:text-[#006a4e] 
+                                  transition-colors"
+                              >
+                                {child.label}
                               </Link>
                             </NavigationMenuLink>
                           </li>
@@ -52,7 +64,14 @@ function NavBar() {
                   </>
                 ) : (
                   <NavigationMenuLink asChild>
-                    <Link to={item.href} onClick={scrollToTop}>
+                    <Link
+                      to={item.href}
+                      onClick={scrollToTop}
+                      className="px-4 py-2 text-sm font-semibold rounded 
+                        text-[#006a4e]
+                        hover:bg-green-50 hover:text-[#006a4e] 
+                        transition-colors"
+                    >
                       {item.label}
                     </Link>
                   </NavigationMenuLink>
