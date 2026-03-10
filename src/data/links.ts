@@ -6,7 +6,7 @@ export const navLinks = [
   {
     label: "Participate",
     dropdown: [
-      { label: "Register", href: "/register" },
+      { label: "Register", href: "/login" },
       { label: "Submit", href: "/submit" },
       { label: "Deadlines", href: "/submit#deadlines" },
     ],
@@ -15,14 +15,10 @@ export const navLinks = [
     label: "Conference Info",
     dropdown: [
       { label: "Speakers", href: "/speakers" },
+      { label: "Schedule", href: "/schedule" },
       { label: "Committee", href: "/committee" },
       { label: "Sponsors", href: "/sponsors" },
-      { label: "FAQ", href: "/faq" },
     ],
-  },
-  {
-    label: "Schedule",
-    href: "/schedule",
   },
   {
     label: "Login",
