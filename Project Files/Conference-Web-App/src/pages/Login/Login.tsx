@@ -1,68 +1,53 @@
-
-
-
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-
-
+} from "@/components/ui/card";
 
 export default function Login() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
+    e.preventDefault();
+    setError("");
 
     if (!email || !password) {
-      setError("Enter your email and password")
-      return
+      setError("Enter your email and password");
+      return;
     }
 
     try {
-      setLoading(true)
+      setLoading(true);
 
-  
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      alert("Login successful!")
-    } catch (err) {
-      setError("Login failed. Please try again.")
+      alert("Login successful!");
+    } catch {
+      setError("Login failed. Please try again.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-<div className="min-h-screen flex items-center justify-center bg-[url('/convert.jpg')] bg-cover bg-center">
-<div className="absolute inset-0 bg-white/10"></div>
+    <div className="min-h-screen flex items-center justify-center bg-[url('/convert.jpg')] bg-cover bg-center">
+      <div className="absolute inset-0 bg-white/10"></div>
 
       <Card className="w-full max-w-md p-6 bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl">
         <CardHeader className="space-y-1">
-         
-          <CardTitle 
-
-     className="text-3xl font-semibold tracking-tight text-center border-b-2 border-green-700 pb-2">
-  Conference Login
-   
-</CardTitle>
-          <CardDescription className="text-center">
-            
-          </CardDescription>
+          <CardTitle className="text-3xl font-semibold tracking-tight text-center border-b-2 border-green-700 pb-2">
+            Conference Login
+          </CardTitle>
+          <CardDescription className="text-center"></CardDescription>
         </CardHeader>
 
         <CardContent>
@@ -91,11 +76,10 @@ export default function Login() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-               
               />
             </div>
 
-                        <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Logging in..." : "Login"}
             </Button>
 
@@ -104,7 +88,7 @@ export default function Login() {
               variant="outline"
               className="w-full"
               disabled={loading}
-              onClick={() => console.log("Redirecting")}
+              onClick={() => (window.location.href = "/signup")}
             >
               Sign up
             </Button>
@@ -112,5 +96,5 @@ export default function Login() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
