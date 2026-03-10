@@ -6,7 +6,7 @@ export const navLinks = [
   {
     label: "Participate",
     dropdown: [
-      { label: "Register", href: "/login" },
+      { label: "Register", href: "/register" },
       { label: "Submit", href: "/submit" },
       { label: "Deadlines", href: "/submit#deadlines" },
     ],
