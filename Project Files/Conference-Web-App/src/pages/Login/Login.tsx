@@ -38,6 +38,31 @@ export default function Login() {
     }
   };
 
+// sign in
+
+ const handlesignin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (!email || !password) {
+      setError("Enter a valid email and password");
+      return;
+    }
+
+    try {
+      await signup(email, password);
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      window.location.href = "/";
+    } catch (err) {
+      setError("Sign-up failed. Please check your credentials.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[url('/convert.jpg')] bg-cover bg-center">
       <div className="absolute inset-0 bg-white/10"></div>
@@ -88,7 +113,7 @@ export default function Login() {
               variant="outline"
               className="w-full"
               disabled={loading}
-              onClick={() => signup(email, password)}
+              onClick={handleLogin}
             >
               Sign up
             </Button>
@@ -98,3 +123,4 @@ export default function Login() {
     </div>
   );
 }
+
