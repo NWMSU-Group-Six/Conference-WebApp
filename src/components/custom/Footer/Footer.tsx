@@ -60,7 +60,14 @@ function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t text-center py-4 text-xs text-gray-500">
-        Northwest Missouri State University · 800 University Drive, Maryville, MO 64468
+        Northwest Missouri State University · 800 University Drive, Maryville,
+        MO 64468 · (660) 562-1212 ·{" "}
+        <a
+          href="mailto: CSIS@nwmissouri.edu"
+          className="hover:text-[#006a4e] transition-colors"
+        >
+          CSIS@nwmissouri.edu
+        </a>
       </div>
     </footer>
   );
