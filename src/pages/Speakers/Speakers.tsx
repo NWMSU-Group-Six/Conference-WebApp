@@ -2,13 +2,14 @@ import SpeakerCard from "@/components/custom/SpeakerCard";
 import styles from "./Speakers.module.css";
 import { getDataByCollection } from "@/firebase/db";
 import { useEffect, useState } from "react";
+import type { Speaker } from "@/models/Speaker";
 
 function Speakers() {
-  const [speakers, setSpeakers] = useState<any[]>([]);
+  const [speakers, setSpeakers] = useState<Speaker[]>([]);
 
   useEffect(() => {
     const fetchSpeakers = async () => {
-      const data = await getDataByCollection("speakers");
+      const data = await getDataByCollection<Speaker>("speakers");
       setSpeakers(data);
     };
     fetchSpeakers();
