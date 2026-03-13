@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Schedule.css";
-import { getDataByCollection, saveDocument } from "@/firebase/db";
+import { getDataByCollection } from "@/firebase/db";
 import type { Schedule } from "@/models/Schedule";
 
 function Schedule() {
