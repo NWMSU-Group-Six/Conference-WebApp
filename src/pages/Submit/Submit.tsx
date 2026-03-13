@@ -89,7 +89,7 @@ export default function Submit() {
             review the guidelines before submitting.
           </p>
 
-          <Link to="/submission" onClick={ScrollToHash} className="submit-button">
+          <Link to="/Submission" onClick={ScrollToHash} className="submit-button">
             Submit Your Paper
           </Link>
 
