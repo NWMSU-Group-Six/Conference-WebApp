@@ -17,7 +17,8 @@ export type Location = {
   state?: string;
   country: string;
   venueName: string;
-  address?: string;
+  zip?: string;
+  street?: string;
 };
 
 export type ContactInfo = {
