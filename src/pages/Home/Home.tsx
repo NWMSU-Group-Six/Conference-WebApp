@@ -1,18 +1,50 @@
 import { Link } from "react-router-dom";
 import { scrollToTop } from "@/utils/scrollToTop";
 import styles from "./Home.module.css";
-
-const keyDates = [
-  { label: "Paper Submission Deadline", date: "March 15, 2026", step: "01" },
-  { label: "Notification of Acceptance", date: "May 1, 2026", step: "02" },
-  { label: "Camera-Ready Deadline", date: "June 1, 2026", step: "03" },
-  { label: "Conference Dates", date: "Sept 14–15, 2026", step: "04" },
-];
+import { useEffect, useState } from "react";
+import type { GeneralInfo } from "@/models/GeneralInfo";
+import { getGeneralInfo } from "@/firebase/services/generalInfoService";
+import { formatDate } from "@/utils/formatDate";
 
 function Home() {
+  const [info, setInfo] = useState<GeneralInfo | null>();
+
+  useEffect(() => {
+    const fetchInfo = async () => {
+      const data = await getGeneralInfo<GeneralInfo>("2026");
+      setInfo(data);
+    };
+    fetchInfo();
+  }, []);
+
+  const keyDates = [
+    {
+      label: "Paper Submission Deadline",
+      date: formatDate(info?.importantDates.paperSubmissionDeadline),
+      step: "01",
+    },
+    {
+      label: "Notification of Acceptance",
+      date: formatDate(info?.importantDates.notificationOfAcceptance),
+      step: "02",
+    },
+    {
+      label: "Camera-Ready Deadline",
+      date: formatDate(info?.importantDates.cameraReadyDeadline),
+      step: "03",
+    },
+    {
+      label: "Conference Dates",
+      date: formatDate(
+        info?.importantDates.conferenceStart,
+        info?.importantDates.conferenceEnd,
+      ),
+      step: "04",
+    },
+  ];
+
   return (
     <div className={styles.page}>
-
       {/* ── Hero ── */}
       <section className={styles.hero}>
         <img
@@ -24,18 +56,30 @@ function Home() {
         <div className={styles.heroContent}>
           <img src="/images/logo-n.svg" alt="" className={styles.heroLogo} />
           <h1 className={styles.heroTitle}>
-            Northwest Conference <span className={styles.heroTitleAccent}>2026</span>
+            {info?.conferenceName}{" "}
+            <span className={styles.heroTitleAccent}>2026</span>
           </h1>
-          <p className={styles.heroSubtitle}>
-            Bringing together researchers, academics, and industry professionals
-            for two days of discovery and collaboration.
+          <p className={styles.heroSubtitle}>{info?.description}</p>
+          <p className={styles.heroDates}>
+            {formatDate(
+              info?.importantDates.conferenceStart,
+              info?.importantDates.conferenceEnd,
+            )}{" "}
+            · {`${info?.location.city}, ${info?.location.state}`}
           </p>
-          <p className={styles.heroDates}>September 14 – 15, 2026 · Maryville, Missouri</p>
           <div className={styles.heroCtas}>
-            <Link to="/register" onClick={scrollToTop} className={styles.ctaPrimary}>
+            <Link
+              to="/register"
+              onClick={scrollToTop}
+              className={styles.ctaPrimary}
+            >
               Register Now
             </Link>
-            <Link to="/submit" onClick={scrollToTop} className={styles.ctaSecondary}>
+            <Link
+              to="/submit"
+              onClick={scrollToTop}
+              className={styles.ctaSecondary}
+            >
               Submit a Paper
             </Link>
           </div>
@@ -62,7 +106,11 @@ function Home() {
               interactive panels, the conference offers something for everyone
               in the academic and professional community.
             </p>
-            <Link to="/committee" onClick={scrollToTop} className={styles.textLink}>
+            <Link
+              to="/committee"
+              onClick={scrollToTop}
+              className={styles.textLink}
+            >
               Meet the Committee →
             </Link>
           </div>
@@ -119,7 +167,11 @@ function Home() {
               <li>Data Science &amp; Analytics</li>
               <li>Software Engineering</li>
             </ul>
-            <Link to="/submit" onClick={scrollToTop} className={styles.ctaPrimary}>
+            <Link
+              to="/submit"
+              onClick={scrollToTop}
+              className={styles.ctaPrimary}
+            >
               View Submission Guidelines
             </Link>
           </div>
@@ -132,14 +184,13 @@ function Home() {
           <div className={styles.venueTextBlock}>
             <span className={styles.sectionLabel}>Venue</span>
             <img src="/images/logo-n.svg" alt="" className={styles.venueLogo} />
-            <h2 className={styles.sectionTitle}>
-              Northwest Missouri State University
-            </h2>
+            <h2 className={styles.sectionTitle}>{info?.location.venueName}</h2>
             <p className={styles.bodyText}>
-              800 University Drive, Maryville, Missouri 64468
+              {info?.location.street}, {info?.location.city},{" "}
+              {info?.location.state} {info?.location.zip}
             </p>
             <a
-              href="https://www.nwmissouri.edu"
+              href={info?.contact.website}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.visitLink}
@@ -162,19 +213,27 @@ function Home() {
         <div className={styles.bannerInner}>
           <h2 className={styles.bannerTitle}>Ready to Participate?</h2>
           <p className={styles.bannerSub}>
-            Register for the conference or submit your paper before the deadline.
+            Register for the conference or submit your paper before the
+            deadline.
           </p>
           <div className={styles.heroCtas}>
-            <Link to="/register" onClick={scrollToTop} className={styles.ctaPrimary}>
+            <Link
+              to="/register"
+              onClick={scrollToTop}
+              className={styles.ctaPrimary}
+            >
               Register Now
             </Link>
-            <Link to="/submit" onClick={scrollToTop} className={styles.ctaSecondaryDark}>
+            <Link
+              to="/submit"
+              onClick={scrollToTop}
+              className={styles.ctaSecondaryDark}
+            >
               Submit a Paper
             </Link>
           </div>
         </div>
       </section>
-
     </div>
   );
 }

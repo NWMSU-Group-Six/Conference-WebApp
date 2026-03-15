@@ -1,8 +1,22 @@
 import { Link } from "react-router-dom";
 import "./Submit.css";
 import ScrollToHash from "@/utils/scrollToHash";
+import { formatDate } from "@/utils/formatDate";
+import { useEffect, useState } from "react";
+import type { GeneralInfo } from "@/models/GeneralInfo";
+import { getGeneralInfo } from "@/firebase/services/generalInfoService";
 
 export default function Submit() {
+  const [info, setInfo] = useState<GeneralInfo | null>();
+
+  useEffect(() => {
+    const fetchInfo = async () => {
+      const data = await getGeneralInfo<GeneralInfo>("2026");
+      setInfo(data);
+    };
+    fetchInfo();
+  }, []);
+
   return (
     <div className="call-for-papers">
       {/* Hero Section */}
@@ -37,7 +51,9 @@ export default function Submit() {
           <div className="deadline-grid">
             <div className="deadline-box">
               <h3>Paper Submission Deadline</h3>
-              <p className="date">March 15, 2026</p>
+              <p className="date">
+                {formatDate(info?.importantDates.paperSubmissionDeadline)}
+              </p>
               <p className="description">
                 Final deadline for paper submissions
               </p>
@@ -45,7 +61,9 @@ export default function Submit() {
 
             <div className="deadline-box">
               <h3>Notification of Acceptance</h3>
-              <p className="date">May 1, 2026</p>
+              <p className="date">
+                {formatDate(info?.importantDates.notificationOfAcceptance)}
+              </p>
               <p className="description">
                 Authors will be notified of acceptance decisions
               </p>
@@ -53,7 +71,9 @@ export default function Submit() {
 
             <div className="deadline-box">
               <h3>Camera-Ready Submission</h3>
-              <p className="date">June 1, 2026</p>
+              <p className="date">
+                {formatDate(info?.importantDates.cameraReadyDeadline)}
+              </p>
               <p className="description">
                 Final version of accepted papers due
               </p>
@@ -61,19 +81,28 @@ export default function Submit() {
 
             <div className="deadline-box">
               <h3>Presentation Slides Due</h3>
-              <p className="date">July 1, 2026</p>
+              <p className="date">
+                {formatDate(info?.importantDates.presentationSlidesDue)}
+              </p>
               <p className="description">Submit your presentation materials</p>
             </div>
 
             <div className="deadline-box">
               <h3>Early Registration Deadline</h3>
-              <p className="date">July 10, 2026</p>
+              <p className="date">
+                {formatDate(info?.importantDates.earlyRegistrationDeadline)}
+              </p>
               <p className="description">Register early for discounted rates</p>
             </div>
 
             <div className="deadline-box">
               <h3>Conference Date</h3>
-              <p className="date">July 15–17, 2026</p>
+              <p className="date">
+                {formatDate(
+                  info?.importantDates.conferenceStart,
+                  info?.importantDates.conferenceEnd,
+                )}
+              </p>
               <p className="description">Main conference event</p>
             </div>
           </div>
@@ -89,13 +118,17 @@ export default function Submit() {
             review the guidelines before submitting.
           </p>
 
-          <Link to="/submission" onClick={ScrollToHash} className="submit-button">
+          <Link
+            to="/submission"
+            onClick={ScrollToHash}
+            className="submit-button"
+          >
             Submit Your Paper
           </Link>
 
           <p className="help-text">
             Need help? Contact us at{" "}
-            <a href="mailto:s559222@nwmissouri.edu">s559222@nwmissouri.edu</a>
+            <a href={`mailto:${info?.contact.email}`}>{info?.contact.email}</a>
           </p>
         </div>
       </section>
