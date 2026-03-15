@@ -6,8 +6,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import styles from "./SpeakerCard.module.css";
+import type { Speaker } from "@/models/Speaker";
 
-function SpeakerCard({ speaker }) {
+function SpeakerCard({ speaker }: { speaker: Speaker }) {
   return (
     <>
       <Card className={styles.speakerCard}>
