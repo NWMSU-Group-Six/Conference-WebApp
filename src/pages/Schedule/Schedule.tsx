@@ -7,11 +7,11 @@ function Schedule() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
 
   useEffect(() => {
-    const fetchSpeakers = async () => {
+    const fetchSchedules = async () => {
       const data = await getDataByCollection<Schedule>("schedules");
       setSchedules(data);
     };
-    fetchSpeakers();
+    fetchSchedules();
   }, []);
 
   return (

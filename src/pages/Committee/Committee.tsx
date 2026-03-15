@@ -1,51 +1,19 @@
+import { useEffect, useState } from "react";
 import "./Committee.css";
-
-const generalChairs = [
-  {
-    name: "To Be Announced",
-    role: "General Chair",
-    affiliation: "Northwest University",
-  },
-  {
-    name: "To Be Announced",
-    role: "Co-General Chair",
-    affiliation: "Northwest University",
-  },
-];
-
-const programChairs = [
-  {
-    name: "To Be Announced",
-    role: "Program Chair",
-    affiliation: "Northwest University",
-  },
-  {
-    name: "To Be Announced",
-    role: "Program Co-Chair",
-    affiliation: "Northwest University",
-  },
-];
-
-const organizingCommittee = [
-  { name: "To Be Announced", role: "Publicity Chair", affiliation: "TBA" },
-  { name: "To Be Announced", role: "Publication Chair", affiliation: "TBA" },
-  { name: "To Be Announced", role: "Registration Chair", affiliation: "TBA" },
-  { name: "To Be Announced", role: "Local Arrangements Chair", affiliation: "TBA" },
-  { name: "To Be Announced", role: "Web Chair", affiliation: "TBA" },
-];
-
-const technicalReviewers = [
-  "To Be Announced",
-  "To Be Announced",
-  "To Be Announced",
-  "To Be Announced",
-  "To Be Announced",
-  "To Be Announced",
-  "To Be Announced",
-  "To Be Announced",
-];
+import type { Committee } from "@/models/Committee";
+import { getCommittee } from "@/firebase/services/committeeService";
 
 function Committee() {
+  const [committee, setCommittee] = useState<Committee | null>();
+
+  useEffect(() => {
+    const fetchCommittee = async () => {
+      const data = await getCommittee<Committee>("2026");
+      setCommittee(data);
+    };
+    fetchCommittee();
+  }, []);
+
   return (
     <div className="committee-page">
       {/* Hero Section */}
@@ -64,7 +32,7 @@ function Committee() {
         <div className="cfp-container">
           <h2 className="section-heading">General Chairs</h2>
           <div className="member-grid">
-            {generalChairs.map((member, i) => (
+            {committee?.generalChairs.map((member, i) => (
               <div key={i} className="member-card card-chair">
                 <div className="member-avatar">{member.name[0]}</div>
                 <h3 className="member-name">{member.name}</h3>
@@ -81,7 +49,7 @@ function Committee() {
         <div className="cfp-container">
           <h2 className="section-heading">Program Committee Chairs</h2>
           <div className="member-grid">
-            {programChairs.map((member, i) => (
+            {committee?.programChairs.map((member, i) => (
               <div key={i} className="member-card card-program">
                 <div className="member-avatar">{member.name[0]}</div>
                 <h3 className="member-name">{member.name}</h3>
@@ -98,7 +66,7 @@ function Committee() {
         <div className="cfp-container">
           <h2 className="section-heading">Organizing Committee</h2>
           <div className="member-grid">
-            {organizingCommittee.map((member, i) => (
+            {committee?.organizingCommittee.map((member, i) => (
               <div key={i} className="member-card card-organizing">
                 <div className="member-avatar">{member.name[0]}</div>
                 <h3 className="member-name">{member.name}</h3>
@@ -119,7 +87,7 @@ function Committee() {
             ensure the quality and rigor of accepted papers.
           </p>
           <div className="reviewer-grid">
-            {technicalReviewers.map((name, i) => (
+            {committee?.technicalReviewers.map((name, i) => (
               <div key={i} className="reviewer-card">
                 <span className="reviewer-dot" />
                 <span className="reviewer-name">{name}</span>
