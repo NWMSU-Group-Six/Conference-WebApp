@@ -12,7 +12,6 @@ const keyDates = [
 function Home() {
   return (
     <div className={styles.page}>
-
       {/* ── Hero ── */}
       <section className={styles.hero}>
         <img
@@ -24,18 +23,29 @@ function Home() {
         <div className={styles.heroContent}>
           <img src="/images/logo-n.svg" alt="" className={styles.heroLogo} />
           <h1 className={styles.heroTitle}>
-            Northwest Conference <span className={styles.heroTitleAccent}>2026</span>
+            Northwest Conference{" "}
+            <span className={styles.heroTitleAccent}>2026</span>
           </h1>
           <p className={styles.heroSubtitle}>
             Bringing together researchers, academics, and industry professionals
             for two days of discovery and collaboration.
           </p>
-          <p className={styles.heroDates}>September 14 – 15, 2026 · Maryville, Missouri</p>
+          <p className={styles.heroDates}>
+            September 14 – 15, 2026 · Maryville, Missouri
+          </p>
           <div className={styles.heroCtas}>
-            <Link to="/register" onClick={scrollToTop} className={styles.ctaPrimary}>
+            <Link
+              to="/register"
+              onClick={scrollToTop}
+              className={styles.ctaPrimary}
+            >
               Register Now
             </Link>
-            <Link to="/submit" onClick={scrollToTop} className={styles.ctaSecondary}>
+            <Link
+              to="/submit"
+              onClick={scrollToTop}
+              className={styles.ctaSecondary}
+            >
               Submit a Paper
             </Link>
           </div>
@@ -62,7 +72,11 @@ function Home() {
               interactive panels, the conference offers something for everyone
               in the academic and professional community.
             </p>
-            <Link to="/committee" onClick={scrollToTop} className={styles.textLink}>
+            <Link
+              to="/committee"
+              onClick={scrollToTop}
+              className={styles.textLink}
+            >
               Meet the Committee →
             </Link>
           </div>
@@ -119,7 +133,11 @@ function Home() {
               <li>Data Science &amp; Analytics</li>
               <li>Software Engineering</li>
             </ul>
-            <Link to="/submit" onClick={scrollToTop} className={styles.ctaPrimary}>
+            <Link
+              to="/submit"
+              onClick={scrollToTop}
+              className={styles.ctaPrimary}
+            >
               View Submission Guidelines
             </Link>
           </div>
@@ -162,19 +180,27 @@ function Home() {
         <div className={styles.bannerInner}>
           <h2 className={styles.bannerTitle}>Ready to Participate?</h2>
           <p className={styles.bannerSub}>
-            Register for the conference or submit your paper before the deadline.
+            Register for the conference or submit your paper before the
+            deadline.
           </p>
           <div className={styles.heroCtas}>
-            <Link to="/register" onClick={scrollToTop} className={styles.ctaPrimary}>
+            <Link
+              to="/register"
+              onClick={scrollToTop}
+              className={styles.ctaPrimary}
+            >
               Register Now
             </Link>
-            <Link to="/submit" onClick={scrollToTop} className={styles.ctaSecondaryDark}>
+            <Link
+              to="/submit"
+              onClick={scrollToTop}
+              className={styles.ctaSecondaryDark}
+            >
               Submit a Paper
             </Link>
           </div>
         </div>
       </section>
-
     </div>
   );
 }
