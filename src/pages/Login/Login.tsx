@@ -40,7 +40,7 @@ export default function Login() {
       await new Promise((resolve) => setTimeout(resolve, 1000))
 
       alert("Login successful!")
-    } catch (err) {
+    } catch {
       setError("Login failed. Please try again.")
     } finally {
       setLoading(false)
@@ -104,7 +104,7 @@ export default function Login() {
               variant="outline"
               className="w-full"
               disabled={loading}
-              onClick={() => console.log("Redirecting")}
+              onClick={() => window.location.href = "/signup"}
             >
               Sign up
             </Button>
