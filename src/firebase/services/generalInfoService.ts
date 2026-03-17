@@ -1,0 +1,22 @@
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/firebase/firebase";
+
+export const getGeneralInfo = async <GeneralInfo>(
+  year: string,
+): Promise<GeneralInfo | null> => {
+  try {
+    console.log("Fetching general info for year:", year);
+    const snapshot = await getDoc(doc(db, "generalInfo", year));
+
+    if (!snapshot.exists()) {
+      console.warn(`No information found for ${year}`);
+      return null;
+    }
+
+    console.log("Successfully fetched general info document for year:", year);
+    return snapshot.data() as GeneralInfo;
+  } catch (error) {
+    console.error("Error fetching general info:", error);
+    throw error;
+  }
+};

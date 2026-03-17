@@ -10,6 +10,8 @@ import Schedule from "./pages/Schedule";
 import Committee from "./pages/Committee";
 import Sponsors from "./pages/Sponsors";
 import Submission from "./pages/Submission";
+import Signup from "./pages/Signup";
+import Registration from "./pages/Registration";
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
           <Route path="/submission" element={<Submission />} />
           <Route path="/committee" element={<Committee />} />
           <Route path="/sponsors" element={<Sponsors />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/registration" element={<Registration />} />
         </Routes>
       </div>
       <div className="flex flex-col items-center justify-center">

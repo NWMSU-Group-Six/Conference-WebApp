@@ -113,7 +113,7 @@ export default function Login() {
               variant="outline"
               className="w-full"
               disabled={loading}
-              onClick={handleLogin}
+              onClick={() => window.location.href = "/signup"}
             >
               Sign up
             </Button>

@@ -1,8 +1,21 @@
 import { Link } from "react-router-dom";
 import { navLinks } from "@/data/links";
 import { scrollToTop } from "@/utils/scrollToTop";
+import { useEffect, useState } from "react";
+import type { GeneralInfo } from "@/models/GeneralInfo";
+import { getGeneralInfo } from "@/firebase/services/generalInfoService";
 
 function Footer() {
+  const [info, setInfo] = useState<GeneralInfo | null>();
+
+  useEffect(() => {
+    const fetchInfo = async () => {
+      const data = await getGeneralInfo<GeneralInfo>("2026");
+      setInfo(data);
+    };
+    fetchInfo();
+  }, []);
+
   return (
     <footer className="w-full border-t" style={{ backgroundColor: "#f0faf5" }}>
       <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-5 gap-8">
@@ -16,7 +29,7 @@ function Footer() {
             />
           </Link>
           <p className="text-sm font-semibold" style={{ color: "#006a4e" }}>
-            Northwest Conference 2026
+            {info?.conferenceName}
           </p>
           <p className="text-xs text-gray-500">
             © {new Date().getFullYear()} Northwest Missouri State University
@@ -60,7 +73,15 @@ function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t text-center py-4 text-xs text-gray-500">
-        Northwest Missouri State University · 800 University Drive, Maryville, MO 64468
+        {info?.location.venueName} · {info?.location.street},{" "}
+        {info?.location.city}, {info?.location.state} {info?.location.zip} ·{" "}
+        {info?.contact.phone} ·{" "}
+        <a
+          href={`mailto: ${info?.contact.email}`}
+          className="hover:text-[#006a4e] transition-colors"
+        >
+          {info?.contact.email}
+        </a>
       </div>
     </footer>
   );
