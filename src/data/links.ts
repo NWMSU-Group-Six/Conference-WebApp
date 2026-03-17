@@ -18,6 +18,7 @@ export const navLinks = [
       { label: "Schedule", href: "/schedule" },
       { label: "Committee", href: "/committee" },
       { label: "Sponsors", href: "/sponsors" },
+      { label: "FAQ", href: "/faq" },
     ],
   },
   {

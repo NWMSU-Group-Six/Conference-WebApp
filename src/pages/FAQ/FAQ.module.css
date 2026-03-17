@@ -1,5 +1,4 @@
-/* Hero Section */
-.hero-section {
+.heroSection {
   background: #006a4e;
   color: #fff;
   padding: 80px 20px;
@@ -7,7 +6,7 @@
   position: relative;
 }
 
-.hero-section::before {
+.heroSection::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -19,12 +18,12 @@
   z-index: 0;
 }
 
-.hero-section .cfp-container {
+.cfpContainer {
   position: relative;
   z-index: 1;
 }
 
-.main-heading {
+.mainHeading {
   font-size: 3rem;
   margin: 0 0 20px 0;
   font-weight: 700;
@@ -39,4 +38,14 @@
   line-height: 1.8;
   opacity: 0.95;
   animation: fadeInUp 0.8s ease-out 0.2s backwards;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
