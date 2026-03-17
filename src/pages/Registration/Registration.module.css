@@ -1,0 +1,96 @@
+.registrationPage {
+  min-height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+.registrationContainer {
+  width: 100%;
+  max-width: 860px;
+}
+
+.registrationTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.registrationDivider {
+  width: 100%;
+  height: 2px;
+  background-color: #15803d;
+  border: none;
+  margin-bottom: 1rem;
+}
+
+.registrationSubtitle {
+  font-size: 0.95rem;
+  color: #15803d;
+  margin-bottom: 2rem;
+  font-weight: 500;
+}
+
+.registrationCard {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.deadline {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.deadline strong {
+  color: #111827;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.table thead tr {
+  background-color: #f3f4f6;
+}
+
+.table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table td {
+  padding: 0.75rem 1rem;
+  color: #111827;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background-color: #f9fafb;
+}
