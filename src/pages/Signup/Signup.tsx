@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "./Signup.module.css";
-
+import { signup } from "@/firebase/auth";
 interface FormData {
   firstName: string;
   lastName: string;
@@ -56,6 +56,10 @@ export default function Signup() {
 
     return newErrors;
   };
+//// sign in logic
+
+/// end of sign in
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -73,11 +77,23 @@ export default function Signup() {
       return;
     }
     setLoading(true);
+
+    try{
+
+      await signup(formData.email, formData.password);
     // TODO: Replace with Firebase createUserWithEmailAndPassword
     await new Promise((res) => setTimeout(res, 1000));
+     setSubmitted(true);
+     window.location.href ="/";
+    }catch (eer){
+     setErrors({
+email: "sign up failed. Try again",
+  });
+  } finally {
     setLoading(false);
-    setSubmitted(true);
-  };
+  }
+}
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[url('/convert.jpg')] bg-cover bg-center">
@@ -170,6 +186,7 @@ export default function Signup() {
 
           <button type="submit" disabled={loading} className={styles.btnSignup}>
             {loading ? "Signing up..." : "Sign Up"}
+           
           </button>
 
           <button
@@ -183,5 +200,5 @@ export default function Signup() {
         </form>
       </div>
     </div>
-  );
-}
+  )
+};
