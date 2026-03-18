@@ -54,21 +54,21 @@ export default function FAQ() {
 
           <AccordionItem value="item-4" className="border-b">
             <AccordionTrigger className="text-xl font-semibold py-6">
-              How do I submit my paper?
+              Who is eligible to submit a paper?
             </AccordionTrigger>
 
             <AccordionContent className="text-lg leading-relaxed pb-6">
-              You can submit your paper through the submission page.
+              Students, researchers, and professionals are welcome to submit papers, provided their work aligns with the topics listed in the conference Call for Papers.
             </AccordionContent>
           </AccordionItem>
 
           <AccordionItem value="item-5" className="border-b">
             <AccordionTrigger className="text-xl font-semibold py-6">
-              Can I edit my submission later?
+              When will authors be notified of acceptance?
             </AccordionTrigger>
             <AccordionContent className="text-lg leading-relaxed pb-6">
-              This depends on the submission system rules. If edits are allowed, instructions will be
-              provided on the submission page.
+              Authors will receive notification of acceptance or rejection after the review process is completed.
+              The notification date will be listed on the conference timeline.
             </AccordionContent>
           </AccordionItem>
 
