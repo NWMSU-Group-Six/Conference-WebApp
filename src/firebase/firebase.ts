@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth/web-extension";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 // Your web app's Firebase configuration
@@ -35,4 +36,11 @@ if (auth) {
   console.log("Firebase auth initialized successfully.");
 } else {
   throw new Error("Firebase auth failed to initialize.");
+}
+
+export const storage = getStorage(app);
+if (storage) {
+  console.log("Firebase storage initialized successfully.");
+} else {
+  throw new Error("Firebase storage failed to initialize.");
 }
