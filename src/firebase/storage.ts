@@ -19,3 +19,14 @@ export const getAllImages = async (folderPath: string) => {
     return [];
   }
 };
+
+export const getImage = async (path: string): Promise<string | null> => {
+  try {
+    const imageRef = ref(storage, path);
+    const url = await getDownloadURL(imageRef);
+    return url;
+  } catch (error) {
+    console.error("Error getting image:", error);
+    return null;
+  }
+};

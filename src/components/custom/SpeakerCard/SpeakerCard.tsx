@@ -7,14 +7,26 @@ import {
 } from "@/components/ui/card";
 import styles from "./SpeakerCard.module.css";
 import type { Speaker } from "@/models/Speaker";
+import { getImage } from "@/firebase/storage";
+import { useEffect, useState } from "react";
 
 function SpeakerCard({ speaker }: { speaker: Speaker }) {
+  const [image, setImage] = useState<string>("");
+
+  useEffect(() => {
+    const fetchSpeakers = async () => {
+      const data = await getImage(`Speakers/${speaker.image}`);
+      setImage(data!);
+    };
+    fetchSpeakers();
+  }, [speaker.image]);
+
   return (
     <>
       <Card className={styles.speakerCard}>
         <div className="aspect-[2/3] w-full">
           <img
-            src={`/src/assets/speakers/${speaker.image}`}
+            src={image}
             alt={speaker.name}
             className="relative z-20 w-full aspect-[2/3] object-cover"
           />
