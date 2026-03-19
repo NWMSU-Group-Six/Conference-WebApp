@@ -72,18 +72,18 @@ export default function Submit() {
         </div>
       </section>
 
-
       {/* Submission Guidelines */}
       <section className={styles.guidelinesSection}>
         <div className={styles.cfpContainer}>
           <h2 className={styles.sectionHeading}>Submission Guidelines</h2>
           <div className={styles.contentCard}>
-
             <div className={styles.guidelineGroup}>
               <h3 className={styles.guidelineTitle}>Paper Format</h3>
               <ul className={styles.guidelineList}>
                 <li>Papers must be written in English</li>
-                <li>Maximum 6 pages including references, figures and tables</li>
+                <li>
+                  Maximum 6 pages including references, figures and tables
+                </li>
                 <li>Must follow ACM format (two-column)</li>
                 <li>File must be submitted as PDF only</li>
               </ul>
@@ -105,7 +105,10 @@ export default function Submit() {
                 <li>One submission per author</li>
                 <li>Author names must be removed for blind review</li>
                 <li>No plagiarism — submissions will be checked</li>
-                <li>Previously published or currently under review work will be rejected</li>
+                <li>
+                  Previously published or currently under review work will be
+                  rejected
+                </li>
               </ul>
             </div>
 
@@ -124,14 +127,17 @@ export default function Submit() {
                 <li>Accepted papers must be presented at the conference</li>
                 <li>At least one author must register for the conference</li>
                 <li>Camera-ready version must be submitted by the deadline</li>
-                <li>Accepted papers will be published in the conference proceedings</li>
+                <li>
+                  Accepted papers will be published in the conference
+                  proceedings
+                </li>
               </ul>
             </div>
 
             <p className={styles.guidelineNote}>
-              ℹ More detailed submission guidelines will be posted soon. Please check back for updates.
+              ℹ More detailed submission guidelines will be posted soon. Please
+              check back for updates.
             </p>
-
           </div>
         </div>
       </section>

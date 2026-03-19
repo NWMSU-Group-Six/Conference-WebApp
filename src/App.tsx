@@ -11,7 +11,7 @@ import Committee from "./pages/Committee";
 import Sponsors from "./pages/Sponsors";
 import Submission from "./pages/Submission";
 import Signup from "./pages/Signup";
-import Registration from "./pages/Registration";
+import Register from "./pages/Register";
 import FAQ from "./pages/FAQ";
 
 function App() {
@@ -32,7 +32,7 @@ function App() {
           <Route path="/committee" element={<Committee />} />
           <Route path="/sponsors" element={<Sponsors />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/registration" element={<Registration />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/faq" element={<FAQ />} />
         </Routes>
       </div>

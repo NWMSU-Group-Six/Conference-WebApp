@@ -1,4 +1,4 @@
-import styles from "./Registration.module.css";
+import styles from "./Register.module.css";
 
 const registrationData = [
   { type: "Regular", early: "$165", late: "$190" },
@@ -13,11 +13,11 @@ export default function Registration() {
   return (
     <div className={styles.registrationPage}>
       <div className={styles.registrationContainer}>
-
         <h1 className={styles.registrationTitle}>Registration</h1>
         <hr className={styles.registrationDivider} />
         <p className={styles.registrationSubtitle}>
-          Register to attend the Conference at Northwest Missouri State University
+          Register to attend the Conference at Northwest Missouri State
+          University
         </p>
 
         <div className={styles.registrationCard}>
@@ -47,7 +47,6 @@ export default function Registration() {
             </table>
           </div>
         </div>
-
       </div>
     </div>
   );

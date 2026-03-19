@@ -12,7 +12,7 @@ export default function FAQ() {
     <section>
       <section className={styles.heroSection}>
         <div className={styles.cfpContainer}>
-          <h1 className={styles.mainHeading}>FREQUENTLY ASKED QUESTIONS</h1>
+          <h1 className={styles.mainHeading}>Frequently Asked Questions</h1>
           <p className={styles.subtitle}>
             This is a list of common questions and answers about the conference.
           </p>
@@ -21,7 +21,6 @@ export default function FAQ() {
 
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-8">
         <Accordion type="single" collapsible className="w-full">
-
           <AccordionItem value="item-1" className="border-b">
             <AccordionTrigger className="text-xl font-semibold py-6">
               When is the submission deadline?
@@ -48,7 +47,9 @@ export default function FAQ() {
             </AccordionTrigger>
 
             <AccordionContent className="text-lg leading-relaxed pb-6">
-              All submissions must follow the formatting guidelines provided on the Call for Papers page, including page limits, citation style, and document format.
+              All submissions must follow the formatting guidelines provided on
+              the Call for Papers page, including page limits, citation style,
+              and document format.
             </AccordionContent>
           </AccordionItem>
 
@@ -58,7 +59,9 @@ export default function FAQ() {
             </AccordionTrigger>
 
             <AccordionContent className="text-lg leading-relaxed pb-6">
-              Students, researchers, and professionals are welcome to submit papers, provided their work aligns with the topics listed in the conference Call for Papers.
+              Students, researchers, and professionals are welcome to submit
+              papers, provided their work aligns with the topics listed in the
+              conference Call for Papers.
             </AccordionContent>
           </AccordionItem>
 
@@ -67,13 +70,13 @@ export default function FAQ() {
               When will authors be notified of acceptance?
             </AccordionTrigger>
             <AccordionContent className="text-lg leading-relaxed pb-6">
-              Authors will receive notification of acceptance or rejection after the review process is completed.
-              The notification date will be listed on the conference timeline.
+              Authors will receive notification of acceptance or rejection after
+              the review process is completed. The notification date will be
+              listed on the conference timeline.
             </AccordionContent>
           </AccordionItem>
-
         </Accordion>
       </div>
-    </section >
+    </section>
   );
 }
