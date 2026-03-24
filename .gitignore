@@ -43,3 +43,17 @@ Thumbs.db
 # package-lock.json
 # yarn.lock
 # pnpm-lock.yaml
+
+# Word temporary files
+~$*.doc*
+~$*.dot*
+# Word Auto Backup File
+Backup of *.doc*
+# Excel temporary files
+~$*.xls*
+# Excel Backup File
+*.xlk
+# PowerPoint temporary files
+~$*.ppt*
+# Visio autosave temporary files
+*.~vsd*
