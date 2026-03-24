@@ -1,5 +1,15 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+.next/
+out/
+
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,22 +17,43 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Environment variables
+.env
+.env.local
+.env.*.local
 
-# Editor directories and files
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 
-.env
+# Misc
+*.local
 
-package-lock.json
+# Optional (usually NOT ignored unless intentional)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Word temporary files
+~$*.doc*
+~$*.dot*
+# Word Auto Backup File
+Backup of *.doc*
+# Excel temporary files
+~$*.xls*
+# Excel Backup File
+*.xlk
+# PowerPoint temporary files
+~$*.ppt*
+# Visio autosave temporary files
+*.~vsd*
