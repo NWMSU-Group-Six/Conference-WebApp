@@ -23,7 +23,7 @@ function App() {
       <div className="flex flex-col items-center justify-center">
         <NavBar />
       </div>
-      <div className="pt-[84px]">
+      <div className="pt-[72px]">
         <ScrollToHash />
         <Routes>
           <Route path="/" element={<Home />} />
