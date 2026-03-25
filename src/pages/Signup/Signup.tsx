@@ -75,13 +75,7 @@ export default function Signup() {
       <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
         {/* Green header strip */}
         <div className="bg-[#006a4e] px-8 py-6">
-          <img
-            src="/images/N-Horiz-Full.png"
-            alt="Northwest Missouri State University"
-            className="h-8 w-auto brightness-0 invert mb-4"
-          />
           <h1 className="text-xl font-bold text-white">Create your account</h1>
-          <p className="text-white/70 text-sm mt-1">Northwest Conference 2026</p>
         </div>
 
         {/* Form body */}
