@@ -1,29 +1,34 @@
 import { getDataByCollection } from "@/firebase/db";
 import { useEffect, useState } from "react";
 import type { Sponsor } from "@/models/Sponsor";
+import Hero from "@/components/custom/Hero";
+import type { GeneralInfo } from "@/models/GeneralInfo";
+import { getGeneralInfo } from "@/firebase/services/generalInfoService";
 
 function Sponsors() {
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  const [info, setInfo] = useState<GeneralInfo | null>();
 
   useEffect(() => {
-    const fetchSpeakers = async () => {
+    const fetchSponsors = async () => {
       const data = await getDataByCollection<Sponsor>("sponsors");
       setSponsors(data);
     };
-    fetchSpeakers();
+    const fetchInfo = async () => {
+      const data = await getGeneralInfo<GeneralInfo>("2026");
+      setInfo(data);
+    };
+    fetchSponsors();
+    fetchInfo();
   }, []);
 
   return (
     <>
-      <section className="hero-section">
-        <div className="cfp-container">
-          <h1 className="main-heading">Sponsors</h1>
-          <p className="subtitle">
-            Thank you to our generous sponsors who support the Northwest
-            Conference 2026.
-          </p>
-        </div>
-      </section>
+      <Hero
+        title="Sponsors"
+        subtitle={`Thank you to our generous sponsors who support the ${info?.conferenceName}`}
+      />
+
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {sponsors.map((s) => (

@@ -5,6 +5,7 @@ import { formatDate } from "@/utils/formatDate";
 import { useEffect, useState } from "react";
 import type { GeneralInfo } from "@/models/GeneralInfo";
 import { getGeneralInfo } from "@/firebase/services/generalInfoService";
+import Hero from "@/components/custom/Hero";
 
 export default function Submit() {
   const [info, setInfo] = useState<GeneralInfo | null>();
@@ -61,16 +62,11 @@ export default function Submit() {
 
   return (
     <div className={styles.callForPapers}>
-      {/* Hero Section */}
-      <section className={styles.heroSection}>
-        <div className={styles.cfpContainer}>
-          <h1 className={styles.mainHeading}>Call for Submissions</h1>
-          <p className={styles.subtitle}>
-            We invite researchers, practitioners, and academics to submit their
-            original work for presentation at our conference.
-          </p>
-        </div>
-      </section>
+      <Hero
+        title="Call for Submissions"
+        subtitle={`We invite researchers, practitioners, and academics to submit their
+            original work for presentation at our conference.`}
+      />
 
       {/* Submission Guidelines */}
       <section className={styles.guidelinesSection}>

@@ -13,60 +13,6 @@
 /* Reusing shared classes from Submit.css — hero-section, cfp-container,
    main-heading, subtitle are already defined there. These are page-specific overrides: */
 
-/* Hero Section (matches Submit.css pattern) */
-.hero-section {
-  background: #006a4e;
-  color: #fff;
-  padding: 80px 20px;
-  text-align: center;
-  position: relative;
-}
-
-.hero-section::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 106, 78, 0.95) 0%,
-    rgba(0, 80, 60, 0.98) 100%
-  );
-  z-index: 0;
-}
-
-.hero-section .cfp-container {
-  position: relative;
-  z-index: 1;
-}
-
-.main-heading {
-  font-size: 3rem;
-  margin: 0 0 20px 0;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
-
-.subtitle {
-  font-size: 1.2rem;
-  max-width: 700px;
-  margin: 0 auto 16px;
-  line-height: 1.8;
-  opacity: 0.95;
-}
-
-.schedule-dates {
-  font-size: 1rem;
-  opacity: 0.85;
-  letter-spacing: 0.5px;
-  margin: 0;
-}
-
-.cfp-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
 /* Notice Banner */
 .schedule-notice-section {
   background-color: #fffbea;

@@ -11,17 +11,21 @@ export const signup = async (
   email: string,
   password: string,
   firstName: string,
-  lastName: string
+  lastName: string,
 ) => {
   await setPersistence(auth, browserLocalPersistence);
-  const credential = await createUserWithEmailAndPassword(auth, email, password);
+  const credential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password,
+  );
   const { uid } = credential.user;
 
   await createUser({
     uid,
     email,
     profile: { firstName, lastName },
-    roles: ["author"],
+    roles: ["user"],
     createdAt: new Date(),
   });
 

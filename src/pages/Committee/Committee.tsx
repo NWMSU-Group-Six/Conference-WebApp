@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./Committee.css";
 import type { Committee as CommitteeModel } from "@/models/Committee";
 import { getCommittee } from "@/firebase/services/committeeService";
+import Hero from "@/components/custom/Hero";
 
 function Committee() {
   const [committee, setCommittee] = useState<CommitteeModel | null>();
@@ -16,16 +17,11 @@ function Committee() {
 
   return (
     <div className="committee-page">
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="cfp-container">
-          <h1 className="main-heading">Conference Committee</h1>
-          <p className="subtitle">
-            Meet the dedicated team of organizers and reviewers working behind
-            the scenes to make Northwest Conference 2026 a success.
-          </p>
-        </div>
-      </section>
+      <Hero
+        title="Conference Committee"
+        subtitle="Meet the dedicated team of organizers and reviewers working behind
+            the scenes to make Northwest Conference 2026 a success."
+      />
 
       {/* General Chairs */}
       <section className="committee-section section-light">

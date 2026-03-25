@@ -4,15 +4,10 @@ import { useAuth } from "@/context/AuthContext";
 import { getReviewers } from "@/firebase/services/userService";
 import { getDataByCollection } from "@/firebase/db";
 import type { User } from "@/models/User";
+import type { Submission } from "@/models/Submission";
 import styles from "./Reviewers.module.css";
-
-interface Submission {
-  id: string;
-  title?: string;
-  authors?: string;
-  abstract?: string;
-  submittedAt?: { seconds: number };
-}
+import { formatDate } from "@/utils/formatDate";
+import Hero from "@/components/custom/Hero";
 
 export default function Reviewers() {
   const { firebaseUser } = useAuth();
@@ -38,15 +33,10 @@ export default function Reviewers() {
 
   return (
     <div className={styles.page}>
-      {/* Hero */}
-      <section className="hero-section">
-        <div className="cfp-container">
-          <h1 className="main-heading">Reviewers</h1>
-          <p className="subtitle">
-            Technical reviewers for Northwest Conference 2026.
-          </p>
-        </div>
-      </section>
+      <Hero
+        title="Reviewers"
+        subtitle="Technical reviewers for Northwest Conference 2026"
+      />
 
       <div className={styles.container}>
         {/* Reviewers list */}
@@ -70,7 +60,9 @@ export default function Reviewers() {
                       {r.profile.firstName} {r.profile.lastName}
                     </p>
                     {r.profile.affiliation && (
-                      <p className={styles.affiliation}>{r.profile.affiliation}</p>
+                      <p className={styles.affiliation}>
+                        {r.profile.affiliation}
+                      </p>
                     )}
                     <p className={styles.email}>{r.email}</p>
                   </div>
@@ -88,7 +80,9 @@ export default function Reviewers() {
             {loadingDocs ? (
               <p className={styles.empty}>Loading submissions…</p>
             ) : submissions.length === 0 ? (
-              <p className={styles.empty}>No submissions found in the database.</p>
+              <p className={styles.empty}>
+                No submissions found in the database.
+              </p>
             ) : (
               <div className={styles.docList}>
                 {submissions.map((s) => (
@@ -96,7 +90,9 @@ export default function Reviewers() {
                     <div className={styles.docMain}>
                       <p className={styles.docTitle}>{s.title || "Untitled"}</p>
                       {s.authors && (
-                        <p className={styles.docMeta}>Authors: {s.authors}</p>
+                        <p className={styles.docMeta}>
+                          Authors: {s.authors.map((a) => a.name).join(", ")}
+                        </p>
                       )}
                       {s.abstract && (
                         <p className={styles.docAbstract}>{s.abstract}</p>
@@ -104,7 +100,7 @@ export default function Reviewers() {
                     </div>
                     {s.submittedAt && (
                       <span className={styles.docDate}>
-                        {new Date(s.submittedAt.seconds * 1000).toLocaleDateString()}
+                        {formatDate(s.submittedAt)}
                       </span>
                     )}
                   </div>
