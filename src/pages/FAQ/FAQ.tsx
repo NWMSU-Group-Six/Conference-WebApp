@@ -1,3 +1,4 @@
+import Hero from "@/components/custom/Hero";
 import styles from "./FAQ.module.css";
 
 import {
@@ -10,14 +11,10 @@ import {
 export default function FAQ() {
   return (
     <section>
-      <section className={styles.heroSection}>
-        <div className={styles.cfpContainer}>
-          <h1 className={styles.mainHeading}>Frequently Asked Questions</h1>
-          <p className={styles.subtitle}>
-            This is a list of common questions and answers about the conference.
-          </p>
-        </div>
-      </section>
+      <Hero
+        title="Frequently Asked Questions"
+        subtitle="This is a list of common questions and answers about the conference."
+      />
 
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-8 my-10">
         <Accordion type="single" collapsible className="w-full">

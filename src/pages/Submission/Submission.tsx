@@ -1,10 +1,13 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { uploadFile } from "@/firebase/storage";
 import { createSubmission } from "@/firebase/services/submissionService";
 import type { SubmissionAuthor } from "@/models/Submission";
 import styles from "./Submission.module.css";
+import Hero from "@/components/custom/Hero";
+import { getGeneralInfo } from "@/firebase/services/generalInfoService";
+import type { GeneralInfo } from "@/models/GeneralInfo";
 
 const TOPICS = [
   "Artificial Intelligence",
@@ -37,19 +40,29 @@ export default function Submission() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [info, setInfo] = useState<GeneralInfo | null>();
+
+  useEffect(() => {
+    const fetchInfo = async () => {
+      const data = await getGeneralInfo<GeneralInfo>("2026");
+      setInfo(data);
+    };
+    fetchInfo();
+  }, []);
 
   // ── Not logged in ──────────────────────────────────────────────────────────
   if (!firebaseUser) {
     return (
       <>
-        <section className="hero-section">
-          <div className="cfp-container">
-            <h1 className="main-heading">Paper Submission</h1>
-            <p className="subtitle">Submit your full paper (PDF) for Northwest Conference 2026.</p>
-          </div>
-        </section>
+        <Hero
+          title="Paper Submission"
+          subtitle={`Submit your full paper (PDF) for  ${info?.conferenceName}`}
+        />
+
         <div className="flex flex-col items-center justify-center py-24 gap-4">
-          <p className="text-lg text-gray-600">You must be signed in to submit a paper.</p>
+          <p className="text-lg text-gray-600">
+            You must be signed in to submit a paper.
+          </p>
           <Link
             to="/login"
             className="px-6 py-2.5 bg-[#006a4e] text-white rounded-lg font-medium hover:bg-[#00543d] transition-colors"
@@ -65,16 +78,18 @@ export default function Submission() {
   if (success) {
     return (
       <>
-        <section className="hero-section">
-          <div className="cfp-container">
-            <h1 className="main-heading">Paper Submission</h1>
-          </div>
-        </section>
+        <Hero
+          title="Paper Submission"
+          subtitle={`Submit your full paper (PDF) for  ${info?.conferenceName}`}
+        />
+
         <div className="flex flex-col items-center justify-center py-24 gap-5 max-w-lg mx-auto text-center px-6">
           <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-3xl">
             ✓
           </div>
-          <h2 className="text-2xl font-bold text-gray-800">Submission Received</h2>
+          <h2 className="text-2xl font-bold text-gray-800">
+            Submission Received
+          </h2>
           <p className="text-gray-500">
             Your paper has been submitted successfully. You can track its status
             from your&nbsp;
@@ -97,17 +112,17 @@ export default function Submission() {
   // ── Helpers ────────────────────────────────────────────────────────────────
   const toggleTopic = (topic: string) => {
     setSelectedTopics((prev) =>
-      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
+      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic],
     );
   };
 
   const updateAuthor = (
     index: number,
     field: keyof SubmissionAuthor,
-    value: string
+    value: string,
   ) => {
     setAuthors((prev) =>
-      prev.map((a, i) => (i === index ? { ...a, [field]: value } : a))
+      prev.map((a, i) => (i === index ? { ...a, [field]: value } : a)),
     );
   };
 
@@ -124,7 +139,11 @@ export default function Submission() {
       setError("Please fill in all required fields.");
       return;
     }
-    if (authors.some((a) => !a.name.trim() || !a.email.trim() || !a.affiliation.trim())) {
+    if (
+      authors.some(
+        (a) => !a.name.trim() || !a.email.trim() || !a.affiliation.trim(),
+      )
+    ) {
       setError("Please complete all author fields.");
       return;
     }
@@ -175,14 +194,10 @@ export default function Submission() {
   // ── Form ───────────────────────────────────────────────────────────────────
   return (
     <>
-      <section className="hero-section">
-        <div className="cfp-container">
-          <h1 className="main-heading">Paper Submission</h1>
-          <p className="subtitle">
-            Submit your full paper (PDF) for Northwest Conference 2026.
-          </p>
-        </div>
-      </section>
+      <Hero
+        title="Paper Submission"
+        subtitle={`Submit your full paper (PDF) for  ${info?.conferenceName}`}
+      />
 
       <section className="bg-gray-50 py-12">
         <div className={styles.container}>
@@ -250,7 +265,9 @@ export default function Submission() {
                       type="button"
                       onClick={() => toggleTopic(topic)}
                       className={`${styles.topicChip} ${
-                        selectedTopics.includes(topic) ? styles.topicChipActive : ""
+                        selectedTopics.includes(topic)
+                          ? styles.topicChipActive
+                          : ""
                       }`}
                     >
                       {topic}
@@ -283,7 +300,9 @@ export default function Submission() {
                       <input
                         type="text"
                         value={author.name}
-                        onChange={(e) => updateAuthor(i, "name", e.target.value)}
+                        onChange={(e) =>
+                          updateAuthor(i, "name", e.target.value)
+                        }
                         placeholder="Full name"
                         className={styles.input}
                         required
@@ -291,7 +310,9 @@ export default function Submission() {
                       <input
                         type="email"
                         value={author.email}
-                        onChange={(e) => updateAuthor(i, "email", e.target.value)}
+                        onChange={(e) =>
+                          updateAuthor(i, "email", e.target.value)
+                        }
                         placeholder="Email"
                         className={styles.input}
                         required
@@ -352,8 +373,16 @@ export default function Submission() {
                     stroke="currentColor"
                     strokeWidth="1.5"
                   >
-                    <path d="M12 16V4m0 0-4 4m4-4 4 4" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M20 16.7A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25" strokeLinecap="round" strokeLinejoin="round" />
+                    <path
+                      d="M12 16V4m0 0-4 4m4-4 4 4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M20 16.7A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                   <p className="text-sm text-gray-500">
                     <span className={styles.browseLink}>Browse</span> or drag &

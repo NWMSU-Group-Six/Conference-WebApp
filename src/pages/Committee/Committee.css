@@ -107,7 +107,9 @@
   text-align: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   border-top: 4px solid #006a4e;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .member-card:hover {

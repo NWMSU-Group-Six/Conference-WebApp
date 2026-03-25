@@ -2,6 +2,7 @@ import SpeakerCard from "@/components/custom/SpeakerCard";
 import { getDataByCollection } from "@/firebase/db";
 import { useEffect, useState } from "react";
 import type { Speaker } from "@/models/Speaker";
+import Hero from "@/components/custom/Hero";
 
 function Speakers() {
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
@@ -15,15 +16,11 @@ function Speakers() {
 
   return (
     <>
-      <section className="hero-section">
-        <div className="cfp-container">
-          <h1 className="main-heading">Speakers</h1>
-          <p className="subtitle">
-            Meet the leading experts and innovators sharing their insights at
-            Northwest Conference 2026.
-          </p>
-        </div>
-      </section>
+      <Hero
+        title="Speakers"
+        subtitle="Meet the leading experts and innovators sharing their insights at
+            Northwest Conference 2026."
+      />
 
       <div className="max-w-3xl mx-auto px-6 py-14">
         {loading ? (

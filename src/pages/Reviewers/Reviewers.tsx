@@ -7,6 +7,7 @@ import type { User } from "@/models/User";
 import type { Submission } from "@/models/Submission";
 import styles from "./Reviewers.module.css";
 import { formatDate } from "@/utils/formatDate";
+import Hero from "@/components/custom/Hero";
 
 export default function Reviewers() {
   const { firebaseUser } = useAuth();
@@ -32,15 +33,10 @@ export default function Reviewers() {
 
   return (
     <div className={styles.page}>
-      {/* Hero */}
-      <section className="hero-section">
-        <div className="cfp-container">
-          <h1 className="main-heading">Reviewers</h1>
-          <p className="subtitle">
-            Technical reviewers for Northwest Conference 2026.
-          </p>
-        </div>
-      </section>
+      <Hero
+        title="Reviewers"
+        subtitle="Technical reviewers for Northwest Conference 2026"
+      />
 
       <div className={styles.container}>
         {/* Reviewers list */}

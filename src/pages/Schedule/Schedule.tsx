@@ -2,31 +2,39 @@ import { useEffect, useState } from "react";
 import "./Schedule.css";
 import { getDataByCollection } from "@/firebase/db";
 import type { Schedule as ScheduleModel } from "@/models/Schedule";
+import Hero from "@/components/custom/Hero";
+import { formatDate } from "@/utils/formatDate";
+import { getGeneralInfo } from "@/firebase/services/generalInfoService";
+import type { GeneralInfo } from "@/models/GeneralInfo";
 
 function Schedule() {
   const [schedules, setSchedules] = useState<ScheduleModel[]>([]);
+  const [info, setInfo] = useState<GeneralInfo | null>();
 
   useEffect(() => {
     const fetchSchedules = async () => {
       const data = await getDataByCollection<ScheduleModel>("schedules");
       setSchedules(data);
     };
+    const fetchInfo = async () => {
+      const data = await getGeneralInfo<GeneralInfo>("2026");
+      setInfo(data);
+    };
     fetchSchedules();
+    fetchInfo();
   }, []);
 
   return (
     <div className="schedule-page">
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="cfp-container">
-          <h1 className="main-heading">Conference Schedule</h1>
-          <p className="subtitle">
-            Two days of keynotes, paper presentations, panels, and networking at
-            Northwest Conference 2026.
-          </p>
-          <p className="schedule-dates">September 14 – 15, 2026</p>
-        </div>
-      </section>
+      <Hero
+        title="Conference Schedule"
+        subtitle="Two days of keynotes, paper presentations, panels, and networking at
+            Northwest Conference 2026."
+        date={formatDate(
+          info?.importantDates.conferenceStart,
+          info?.importantDates.conferenceEnd,
+        )}
+      />
 
       {/* Notice Banner */}
       <section className="schedule-notice-section">
