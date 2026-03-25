@@ -1,17 +1,9 @@
+import { useState } from "react";
 import styles from "./SpeakerCard.module.css";
 import type { Speaker } from "@/models/Speaker";
-import { getImage } from "@/firebase/storage";
-import { useEffect, useState } from "react";
 
 function SpeakerCard({ speaker }: { speaker: Speaker }) {
-  const [image, setImage] = useState<string>("");
   const [expanded, setExpanded] = useState(false);
-
-  useEffect(() => {
-    getImage(`speakers/${speaker.image}`).then((url) => {
-      if (url) setImage(url);
-    });
-  }, [speaker.image]);
 
   const initials = speaker.name
     .split(" ")
@@ -31,8 +23,12 @@ function SpeakerCard({ speaker }: { speaker: Speaker }) {
         onKeyDown={(e) => e.key === "Enter" && setExpanded((v) => !v)}
       >
         <div className={styles.avatarWrap}>
-          {image ? (
-            <img src={image} alt={speaker.name} className={styles.avatar} />
+          {speaker.image ? (
+            <img
+              src={speaker.image}
+              alt={speaker.name}
+              className={styles.avatar}
+            />
           ) : (
             <div className={styles.avatarFallback}>{initials}</div>
           )}
