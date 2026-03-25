@@ -381,14 +381,14 @@ export default function Submission() {
             <div className="flex items-center justify-end gap-3 pb-8">
               <Link
                 to="/"
-                className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+                className="h-11 px-6 inline-flex items-center justify-center rounded-lg border border-gray-300 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition-colors"
               >
                 Cancel
               </Link>
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-7 py-2.5 bg-[#006a4e] text-white rounded-lg text-sm font-semibold hover:bg-[#00543d] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                className="h-11 px-6 bg-[#006a4e] text-white rounded-lg text-sm font-semibold hover:bg-[#00543d] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {submitting ? "Submitting…" : "Submit Paper"}
               </button>

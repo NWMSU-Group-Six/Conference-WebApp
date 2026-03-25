@@ -1,0 +1,174 @@
+.page {
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionTitle {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #006a4e;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #006a4e;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+.info {
+  min-width: 0;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: #111827;
+}
+
+.affiliation {
+  font-size: 0.8125rem;
+  color: #4b5563;
+  margin-top: 1px;
+}
+
+.email {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.empty {
+  color: #6b7280;
+  font-size: 0.9375rem;
+  padding: 1rem 0;
+}
+
+/* Submissions */
+.docList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.docRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.docMain {
+  flex: 1;
+  min-width: 0;
+}
+
+.docTitle {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.docMeta {
+  font-size: 0.8125rem;
+  color: #4b5563;
+  margin-bottom: 0.25rem;
+}
+
+.docAbstract {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.docDate {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  white-space: nowrap;
+  margin-top: 3px;
+}
+
+/* Login prompt */
+.loginPrompt {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 0.75rem;
+  padding: 1rem 1.5rem;
+  color: #166534;
+  font-size: 0.9375rem;
+}
+
+.loginBtn {
+  flex-shrink: 0;
+  background-color: #006a4e;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.4rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+
+.loginBtn:hover {
+  background-color: #00543d;
+}

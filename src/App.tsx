@@ -14,6 +14,7 @@ import Signup from "./pages/Signup";
 import Register from "./pages/Register";
 import FAQ from "./pages/FAQ";
 import Reviewers from "./pages/Reviewers";
+import Dashboard from "./pages/Dashboard";
 import { AuthProvider } from "./context/AuthContext";
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/reviewers" element={<Reviewers />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
       <div className="flex flex-col items-center justify-center">
