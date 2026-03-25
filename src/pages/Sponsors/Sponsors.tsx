@@ -34,7 +34,7 @@ function Sponsors() {
           {sponsors.map((s) => (
             <div key={s.name} className="flex items-center justify-center p-4">
               <img
-                src={`/src/assets/sponsors/${s.image}`}
+                src={s.image}
                 alt={s.name}
                 className="max-h-24 w-auto object-contain"
               />

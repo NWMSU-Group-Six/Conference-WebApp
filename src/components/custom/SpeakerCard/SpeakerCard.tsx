@@ -8,7 +8,7 @@ function SpeakerCard({ speaker }: { speaker: Speaker }) {
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    getImage(`Speakers/${speaker.image}`).then((url) => {
+    getImage(`speakers/${speaker.image}`).then((url) => {
       if (url) setImage(url);
     });
   }, [speaker.image]);
