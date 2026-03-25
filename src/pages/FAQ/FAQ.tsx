@@ -19,7 +19,7 @@ export default function FAQ() {
         </div>
       </section>
 
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-8">
+      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-8 my-10">
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="item-1" className="border-b">
             <AccordionTrigger className="text-xl font-semibold py-6">

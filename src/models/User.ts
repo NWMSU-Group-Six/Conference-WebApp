@@ -1,4 +1,4 @@
-export type UserRole = "author" | "reviewer" | "chair" | "admin" | "sponsor";
+export type UserRole = "user" | "reviewer" | "admin";
 
 export type Registration = {
   registered: boolean;
