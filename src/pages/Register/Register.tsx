@@ -1,15 +1,19 @@
+import { useEffect, useState } from "react";
 import styles from "./Register.module.css";
-
-const registrationData = [
-  { type: "Regular", early: "$165", late: "$190" },
-  { type: "Retired Faculty", early: "$75", late: "$75" },
-  { type: "K-12 Faculty", early: "$70", late: "$70" },
-  { type: "Student – Full Conference", early: "$70", late: "$70" },
-  { type: "Student – Saturday Only", early: "$30", late: "$30" },
-  { type: "Vendor", early: "$135", late: "$135" },
-];
+import { getDataByCollection } from "@/firebase/db";
+import type { Registration } from "@/models/Registration";
 
 export default function Registration() {
+  const [registration, setRegistration] = useState<Registration[]>([]);
+
+  useEffect(() => {
+    const fetchRegistration = async () => {
+      const data = await getDataByCollection<Registration>("registration");
+      setRegistration(data);
+    };
+    fetchRegistration();
+  }, []);
+
   return (
     <div className={styles.registrationPage}>
       <div className={styles.registrationContainer}>
@@ -36,7 +40,7 @@ export default function Registration() {
                 </tr>
               </thead>
               <tbody>
-                {registrationData.map((row, index) => (
+                {registration.map((row, index) => (
                   <tr key={index}>
                     <td>{row.type}</td>
                     <td>{row.early}</td>
