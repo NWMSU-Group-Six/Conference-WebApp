@@ -1,23 +1,98 @@
-.speakerCard {
+.card {
   background: #fff;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
-  border-left: 5px solid #006a4e;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
-  max-width: 24rem;
-  overflow: hidden;
+  border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
-  transition: all 0.15s ease-in-out;
-  position: relative;
-  padding-top: 0;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
 }
 
-.speakerCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 20px rgba(0, 106, 78, 0.15);
+.card:hover {
+  box-shadow: 0 4px 16px rgba(0, 106, 78, 0.1);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.row:focus-visible {
+  outline: 2px solid #006a4e;
+  outline-offset: -2px;
+}
+
+.avatarWrap {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+  background: #006a4e;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.title {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin: 2px 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chevron {
+  flex-shrink: 0;
+  font-size: 1.125rem;
+  color: #006a4e;
+  transition: transform 0.2s ease;
+  display: inline-block;
+  line-height: 1;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.bio {
+  padding: 0.875rem 1.25rem 1.25rem;
+  border-top: 1px solid #f3f4f6;
+  background: #fafafa;
+}
+
+.bio p {
+  font-size: 0.875rem;
+  line-height: 1.75;
+  color: #4b5563;
+  margin: 0;
 }

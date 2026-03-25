@@ -1,10 +1,3 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import styles from "./SpeakerCard.module.css";
 import type { Speaker } from "@/models/Speaker";
 import { getImage } from "@/firebase/storage";
@@ -12,33 +5,58 @@ import { useEffect, useState } from "react";
 
 function SpeakerCard({ speaker }: { speaker: Speaker }) {
   const [image, setImage] = useState<string>("");
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    const fetchSpeakers = async () => {
-      const data = await getImage(`Speakers/${speaker.image}`);
-      setImage(data!);
-    };
-    fetchSpeakers();
+    getImage(`Speakers/${speaker.image}`).then((url) => {
+      if (url) setImage(url);
+    });
   }, [speaker.image]);
 
+  const initials = speaker.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
-    <>
-      <Card className={styles.speakerCard}>
-        <div className="aspect-[2/3] w-full">
-          <img
-            src={image}
-            alt={speaker.name}
-            className="relative z-20 w-full aspect-[2/3] object-cover"
-          />
+    <div className={styles.card}>
+      <div
+        className={styles.row}
+        onClick={() => setExpanded((v) => !v)}
+        role="button"
+        aria-expanded={expanded}
+        tabIndex={0}
+        onKeyDown={(e) => e.key === "Enter" && setExpanded((v) => !v)}
+      >
+        <div className={styles.avatarWrap}>
+          {image ? (
+            <img src={image} alt={speaker.name} className={styles.avatar} />
+          ) : (
+            <div className={styles.avatarFallback}>{initials}</div>
+          )}
         </div>
 
-        <CardContent className="space-y-1">
-          <CardTitle>{speaker.name}</CardTitle>
-          <p className="text-sm text-muted-foreground">{speaker.title}</p>
-          <CardDescription>{speaker.bio}</CardDescription>
-        </CardContent>
-      </Card>
-    </>
+        <div className={styles.info}>
+          <p className={styles.name}>{speaker.name}</p>
+          <p className={styles.title}>{speaker.title}</p>
+        </div>
+
+        <span
+          className={`${styles.chevron} ${expanded ? styles.chevronOpen : ""}`}
+          aria-hidden
+        >
+          ▾
+        </span>
+      </div>
+
+      {expanded && (
+        <div className={styles.bio}>
+          <p>{speaker.bio}</p>
+        </div>
+      )}
+    </div>
   );
 }
 

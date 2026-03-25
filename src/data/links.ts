@@ -12,17 +12,14 @@ export const navLinks = [
     ],
   },
   {
-    label: "Conference Info",
+    label: "Conference",
     dropdown: [
-      { label: "Speakers", href: "/speakers" },
       { label: "Schedule", href: "/schedule" },
+      { label: "Speakers", href: "/speakers" },
       { label: "Committee", href: "/committee" },
+      { label: "Reviewers", href: "/reviewers" },
       { label: "Sponsors", href: "/sponsors" },
       { label: "FAQ", href: "/faq" },
     ],
-  },
-  {
-    label: "Login",
-    href: "/login",
   },
 ];

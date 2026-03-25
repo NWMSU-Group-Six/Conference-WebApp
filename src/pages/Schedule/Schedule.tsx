@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import "./Schedule.css";
 import { getDataByCollection } from "@/firebase/db";
-import type { Schedule } from "@/models/Schedule";
+import type { Schedule as ScheduleModel } from "@/models/Schedule";
 
 function Schedule() {
-  const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [schedules, setSchedules] = useState<ScheduleModel[]>([]);
 
   useEffect(() => {
     const fetchSchedules = async () => {
-      const data = await getDataByCollection<Schedule>("schedules");
+      const data = await getDataByCollection<ScheduleModel>("schedules");
       setSchedules(data);
     };
     fetchSchedules();

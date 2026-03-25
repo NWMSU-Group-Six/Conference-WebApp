@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import "./Committee.css";
-import type { Committee } from "@/models/Committee";
+import type { Committee as CommitteeModel } from "@/models/Committee";
 import { getCommittee } from "@/firebase/services/committeeService";
 
 function Committee() {
-  const [committee, setCommittee] = useState<Committee | null>();
+  const [committee, setCommittee] = useState<CommitteeModel | null>();
 
   useEffect(() => {
     const fetchCommittee = async () => {
-      const data = await getCommittee<Committee>("2026");
+      const data = await getCommittee<CommitteeModel>("2026");
       setCommittee(data);
     };
     fetchCommittee();

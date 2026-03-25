@@ -6,39 +6,21 @@ import NavBar from "@/components/custom/NavBar";
 import Footer from "@/components/custom/Footer";
 import Submit from "./pages/Submit";
 import ScrollToHash from "./utils/scrollToHash";
-import  Schedule from "./pages/Schedule";
-import  Committee from "./pages/Committee";
+import Schedule from "./pages/Schedule";
+import Committee from "./pages/Committee";
 import Sponsors from "./pages/Sponsors";
 import Submission from "./pages/Submission";
 import Signup from "./pages/Signup";
 import Register from "./pages/Register";
 import FAQ from "./pages/FAQ";
+import Reviewers from "./pages/Reviewers";
+import { AuthProvider } from "./context/AuthContext";
 
-import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import type{ User} from "firebase/auth";
-import { auth } from "./firebase/firebase";
 function App() {
-   const [user, setUser] = useState<User | null>(null)
-     const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user)
-      if (user) {
-        console.log("Still signed in:", user.email);
-      } else {
-        console.log("No user signed in");
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
   return (
-    <>
+    <AuthProvider>
       <div className="flex flex-col items-center justify-center">
-    <NavBar user={user}/>
+        <NavBar />
       </div>
       <div className="pt-[84px]">
         <ScrollToHash />
@@ -54,12 +36,13 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/register" element={<Register />} />
           <Route path="/faq" element={<FAQ />} />
+          <Route path="/reviewers" element={<Reviewers />} />
         </Routes>
       </div>
       <div className="flex flex-col items-center justify-center">
         <Footer />
       </div>
-    </>
+    </AuthProvider>
   );
 }
 

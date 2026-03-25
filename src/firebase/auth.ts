@@ -1,34 +1,35 @@
-// Authorization and authentication logic using Firebase Authentication
 import { auth } from "./firebase";
-// auth.js
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   setPersistence,
-  signOut,
   browserLocalPersistence,
 } from "firebase/auth";
+import { createUser } from "./services/userService";
 
-export const signup = async (email: string, password: string) => {
-  try {
-    await createUserWithEmailAndPassword(auth, email, password);
-    console.log("User registered successfully");
-  } catch (err) {
-    console.log("Login error: ", err);
-    throw err;
-  }
+export const signup = async (
+  email: string,
+  password: string,
+  firstName: string,
+  lastName: string
+) => {
+  await setPersistence(auth, browserLocalPersistence);
+  const credential = await createUserWithEmailAndPassword(auth, email, password);
+  const { uid } = credential.user;
+
+  await createUser({
+    uid,
+    email,
+    profile: { firstName, lastName },
+    roles: ["author"],
+    createdAt: new Date(),
+  });
+
+  return credential.user;
 };
 
 export const login = async (email: string, password: string) => {
-  try {
-    await setPersistence(auth, browserLocalPersistence);
-    await signInWithEmailAndPassword(auth, email, password);
-    console.log("User: ", email, "signed in");
-  } catch (err) {
-    console.log("Login error: ", err);
-    throw err;
-  }
+  await setPersistence(auth, browserLocalPersistence);
+  const credential = await signInWithEmailAndPassword(auth, email, password);
+  return credential.user;
 };
-
-
-

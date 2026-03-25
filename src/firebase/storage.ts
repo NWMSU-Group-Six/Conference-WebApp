@@ -1,5 +1,16 @@
 import { storage } from "@/firebase/firebase";
-import { ref, listAll, getDownloadURL } from "firebase/storage";
+import { ref, listAll, getDownloadURL, uploadBytes } from "firebase/storage";
+
+/**
+ * Upload a file to Firebase Storage and return its download URL.
+ * @param path  Storage path, e.g. "submissions/uid/filename.pdf"
+ * @param file  The File or Blob to upload
+ */
+export const uploadFile = async (path: string, file: File): Promise<string> => {
+  const fileRef = ref(storage, path);
+  await uploadBytes(fileRef, file);
+  return getDownloadURL(fileRef);
+};
 
 export const getAllImages = async (folderPath: string) => {
   try {
