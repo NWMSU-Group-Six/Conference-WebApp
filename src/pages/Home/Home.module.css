@@ -1,0 +1,520 @@
+/* ═══════════════════════════════════════════
+   Home Page — Phase 2
+   ═══════════════════════════════════════════ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.page {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #222;
+  line-height: 1.6;
+}
+
+/* ── Shared label / title helpers ── */
+.sectionLabel {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #006a4e;
+  margin-bottom: 10px;
+}
+
+.sectionLabelLight {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #a7f3d0;
+  margin-bottom: 10px;
+}
+
+.sectionTitle {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 20px;
+  line-height: 1.25;
+}
+
+.sectionTitleLight {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 20px;
+  line-height: 1.25;
+}
+
+.bodyText {
+  font-size: 1rem;
+  color: #555;
+  margin: 0 0 14px;
+  line-height: 1.8;
+}
+
+.bodyTextLight {
+  font-size: 1rem;
+  color: #d1fae5;
+  margin: 0 0 14px;
+  line-height: 1.8;
+}
+
+.textLink {
+  display: inline-block;
+  margin-top: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #006a4e;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.textLink:hover {
+  color: #004d35;
+}
+
+/* ── CTA Buttons ── */
+.ctaPrimary {
+  display: inline-block;
+  padding: 0.85rem 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  background-color: #006a4e;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.2s, transform 0.15s;
+}
+
+.ctaPrimary:hover {
+  background-color: #004d35;
+  transform: translateY(-2px);
+}
+
+.ctaSecondary {
+  display: inline-block;
+  padding: 0.85rem 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.2s, transform 0.15s;
+  backdrop-filter: blur(4px);
+}
+
+.ctaSecondary:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.ctaSecondaryDark {
+  display: inline-block;
+  padding: 0.85rem 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.2s, transform 0.15s;
+  backdrop-filter: blur(4px);
+}
+
+.ctaSecondaryDark:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.heroCtas {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ══════════════════════════════
+   1. HERO
+══════════════════════════════ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.heroBg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  z-index: 0;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 40, 25, 0.7) 0%,
+    rgba(0, 60, 35, 0.75) 60%,
+    rgba(0, 40, 25, 0.85) 100%
+  );
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  max-width: 820px;
+  padding: 2rem;
+  color: #fff;
+}
+
+.heroLogo {
+  width: 90px;
+  height: auto;
+  display: block;
+  margin: 0 auto 28px;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.45));
+}
+
+.heroEyebrow {
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  margin: 0 0 14px;
+  font-weight: 600;
+}
+
+.heroTitle {
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 0 0 16px;
+}
+
+.heroTitleAccent {
+  color: #6ee7b7;
+}
+
+.heroSubtitle {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  opacity: 0.92;
+  max-width: 640px;
+  margin: 0 auto 12px;
+  line-height: 1.7;
+}
+
+.heroDates {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+  margin: 0 auto 32px;
+}
+
+/* ══════════════════════════════
+   2. ABOUT
+══════════════════════════════ */
+.about {
+  background-color: #fff;
+  padding: 90px 20px;
+}
+
+.aboutInner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.aboutText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.aboutImageWrap {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.aboutImage {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.aboutImageWrap:hover .aboutImage {
+  transform: scale(1.03);
+}
+
+/* ══════════════════════════════
+   3. KEY DATES
+══════════════════════════════ */
+.dates {
+  background-color: #f0faf5;
+  padding: 80px 20px;
+}
+
+.sectionInner {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.datesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.dateCard {
+  background: #fff;
+  border-radius: 14px;
+  padding: 32px 24px;
+  box-shadow: 0 4px 16px rgba(0, 106, 78, 0.08);
+  border-top: 4px solid #006a4e;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dateCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 106, 78, 0.14);
+}
+
+.dateStep {
+  display: block;
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #e6f4ee;
+  line-height: 1;
+  margin-bottom: 12px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.05em;
+}
+
+.dateLabel {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #555;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dateValue {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #006a4e;
+  margin: 0;
+}
+
+/* ══════════════════════════════
+   4. CALL FOR PAPERS
+══════════════════════════════ */
+.cfp {
+  background: linear-gradient(135deg, #006a4e 0%, #004d35 100%);
+  padding: 90px 20px;
+}
+
+.cfpInner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.cfpImageWrap {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.cfpImage {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  display: block;
+}
+
+.cfpText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.cfpTopics {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cfpTopics li {
+  font-size: 0.95rem;
+  color: #d1fae5;
+  padding-left: 20px;
+  position: relative;
+}
+
+.cfpTopics li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: #6ee7b7;
+}
+
+/* ══════════════════════════════
+   5. VENUE
+══════════════════════════════ */
+.venue {
+  background-color: #fff;
+  padding: 90px 20px;
+}
+
+.venueInner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.venueTextBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.venueLogo {
+  width: 56px;
+  height: auto;
+  margin: 8px 0 16px;
+}
+
+.visitLink {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  background-color: #006a4e;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.2s, transform 0.15s;
+}
+
+.visitLink:hover {
+  background-color: #004d35;
+  transform: translateY(-2px);
+}
+
+.venueImageWrap {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.venueHeroImg {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.venueImageWrap:hover .venueHeroImg {
+  transform: scale(1.03);
+}
+
+/* ══════════════════════════════
+   6. BOTTOM CTA BANNER
+══════════════════════════════ */
+.banner {
+  background: linear-gradient(135deg, #004d35 0%, #006a4e 100%);
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.bannerInner {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.bannerTitle {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 12px;
+}
+
+.bannerSub {
+  font-size: 1.05rem;
+  color: #a7f3d0;
+  margin: 0 0 32px;
+}
+
+/* ══════════════════════════════
+   RESPONSIVE
+══════════════════════════════ */
+@media (max-width: 900px) {
+  .aboutInner,
+  .cfpInner,
+  .venueInner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .cfpImageWrap {
+    order: -1;
+  }
+
+  .venueHeroImg {
+    height: 260px;
+  }
+}
+
+@media (max-width: 600px) {
+  .sectionTitle,
+  .sectionTitleLight {
+    font-size: 1.7rem;
+  }
+
+  .datesGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .heroCtas {
+    flex-direction: column;
+    align-items: center;
+  }
+}
