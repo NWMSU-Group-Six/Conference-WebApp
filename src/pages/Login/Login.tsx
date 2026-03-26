@@ -38,9 +38,11 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[url('/convert.jpg')] bg-cover bg-center flex flex-col items-center justify-center px-4 py-16">
+    <div className="min-h-screen bg-[url('/convert.jpg')] bg-cover bg-center relative flex flex-col items-center justify-center px-4 py-16">
+      {/* Dark overlay behind card */}
+      <div className="absolute inset-0 bg-black/50" />
       {/* Card */}
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="relative z-10 w-full max-w-md bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
         {/* Green header strip */}
         <div className="bg-[#006a4e] px-8 py-6">
           <h1 className="text-xl font-bold text-white">
