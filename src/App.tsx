@@ -20,6 +20,7 @@ import { AuthProvider } from "./context/AuthContext";
 function App() {
   return (
     <AuthProvider>
+      <>
       <div className="flex flex-col items-center justify-center">
         <NavBar />
       </div>
@@ -41,6 +42,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
+      </>
       <div className="flex flex-col items-center justify-center">
         <Footer />
       </div>
