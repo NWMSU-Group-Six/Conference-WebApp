@@ -12,13 +12,22 @@ export default function Login() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!email || !password) { setError("Enter your email and password."); return; }
+    if (!email || !password) {
+      setError("Enter your email and password.");
+      return;
+    }
     setLoading(true);
     try {
       await login(email, password);
       navigate("/");
     } catch (err: any) {
-      if (["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found"].includes(err.code)) {
+      if (
+        [
+          "auth/invalid-credential",
+          "auth/wrong-password",
+          "auth/user-not-found",
+        ].includes(err.code)
+      ) {
         setError("Invalid email or password.");
       } else {
         setError("Login failed. Please try again.");
@@ -29,13 +38,14 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 py-16">
+    <div className="min-h-screen bg-[url('/convert.jpg')] bg-cover bg-center flex flex-col items-center justify-center px-4 py-16">
       {/* Card */}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
         {/* Green header strip */}
         <div className="bg-[#006a4e] px-8 py-6">
-          
-          <h1 className="text-xl font-bold text-white">Sign in to your account</h1>
+          <h1 className="text-xl font-bold text-white">
+            Sign in to your account
+          </h1>
         </div>
 
         {/* Form body */}
@@ -48,25 +58,44 @@ export default function Login() {
             )}
 
             <div className="space-y-1.5">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Email
+              </label>
               <input
-                id="email" type="email" placeholder="you@example.com"
-                value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email"
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
                 className="w-full h-11 px-3 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#006a4e] focus:border-transparent transition"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
               <input
-                id="password" type="password" placeholder="Enter your password"
-                value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password"
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
                 className="w-full h-11 px-3 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#006a4e] focus:border-transparent transition"
               />
             </div>
 
             <button
-              type="submit" disabled={loading}
+              type="submit"
+              disabled={loading}
               className="w-full h-11 bg-[#006a4e] hover:bg-[#00543d] text-white font-semibold rounded-lg transition-colors disabled:opacity-60"
             >
               {loading ? "Signing in…" : "Sign In"}
@@ -75,11 +104,15 @@ export default function Login() {
 
           <p className="mt-6 text-center text-sm text-gray-500">
             Don&apos;t have an account?{" "}
-            <Link to="/signup" className="text-[#006a4e] font-semibold hover:underline">Create one</Link>
+            <Link
+              to="/signup"
+              className="text-[#006a4e] font-semibold hover:underline"
+            >
+              Create one
+            </Link>
           </p>
         </div>
       </div>
     </div>
   );
 }
-
