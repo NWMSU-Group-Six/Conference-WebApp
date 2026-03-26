@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { navLinks } from "@/data/links";
-import { scrollToTop } from "@/utils/scrollToTop";
 import { useEffect, useState } from "react";
 import type { GeneralInfo } from "@/models/GeneralInfo";
 import { getGeneralInfo } from "@/firebase/services/generalInfoService";
@@ -21,7 +20,7 @@ function Footer() {
       <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-5 gap-8">
         {/* Logo / Branding */}
         <div className="flex flex-col items-start gap-3">
-          <Link to="/" onClick={scrollToTop}>
+          <Link to="/">
             <img
               src="/images/logo-n.svg"
               alt="Northwest Missouri State University"
@@ -47,8 +46,7 @@ function Footer() {
                 item.dropdown.map((sub) => (
                   <li key={sub.label}>
                     <Link
-                      onClick={scrollToTop}
-                      to={sub.href}
+                      to={sub.href.split("#")[0]}
                       className="hover:text-[#006a4e] transition-colors"
                     >
                       {sub.label}
@@ -58,8 +56,7 @@ function Footer() {
               ) : (
                 <li>
                   <Link
-                    onClick={scrollToTop}
-                    to={item.href}
+                    to={item.href ?? "/"}
                     className="hover:text-[#006a4e] transition-colors"
                   >
                     {item.label}
