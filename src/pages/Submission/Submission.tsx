@@ -23,22 +23,6 @@ export default function Submission() {
       <section className="bg-gray-50 py-12">
         <div className={styles.container}>
           <div className="mx-auto max-w-3xl space-y-8">
-            {/* Paper Details (outline only) */}
-            <Card className="rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-[#0B6B3A]">Paper Details</CardTitle>
-                <CardDescription>
-                  Basic info about your submission (outline for now).
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 text-sm text-muted-foreground">
-                  <div className="h-10 w-full rounded-md border bg-white" />
-                  <div className="h-10 w-full rounded-md border bg-white" />
-                  <div className="h-32 w-full rounded-md border bg-white" />
-                </div>
-              </CardContent>
-            </Card>
 
             {/* Authors (outline only) */}
             <Card className="rounded-2xl">
@@ -55,13 +39,29 @@ export default function Submission() {
                     <div className="space-y-3">
                       <div className="h-10 w-full rounded-md border" />
                       <div className="h-10 w-full rounded-md border" />
-                      <div className="h-10 w-full rounded-md border" />
                     </div>
                   </div>
 
                   <Button variant="secondary" disabled>
                     + Add author (coming soon)
                   </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Paper Details (outline only) */}
+            <Card className="rounded-2xl">
+              <CardHeader>
+                <CardTitle className="text-[#0B6B3A]">Paper Details</CardTitle>
+                <CardDescription>
+                  Basic info about your submission (outline for now).
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3 text-sm text-muted-foreground">
+                  <div className="h-10 w-full rounded-md border bg-white" />
+                  <div className="h-10 w-full rounded-md border bg-white" />
+                  <div className="h-32 w-full rounded-md border bg-white" />
                 </div>
               </CardContent>
             </Card>
