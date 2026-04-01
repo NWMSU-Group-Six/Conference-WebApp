@@ -1,24 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./Register.module.css";
 import { useAuth } from "@/context/AuthContext";
 import { registerForConference } from "@/firebase/services/userService";
 import Hero from "@/components/custom/Hero";
-
-const registrationData = [
-  { type: "Regular", early: "$165", late: "$190" },
-  { type: "Faculty", early: "$75", late: "$75" },
-  { type: "Alumni", early: "$70", late: "$70" },
-  { type: "Student – Full Conference", early: "$70", late: "$70" },
-  { type: "Student – Saturday Only", early: "$30", late: "$30" },
-  { type: "Vendor", early: "$135", late: "$135" },
-];
+import type { Registration } from "@/models/Registration";
+import { getDataByCollection } from "@/firebase/db";
 
 export default function Registration() {
   const { firebaseUser, userProfile, refreshProfile } = useAuth();
   const [selectedTicket, setSelectedTicket] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [registrationData, setRegistrationData] = useState<Registration[]>([]);
+
+  useEffect(() => {
+    getDataByCollection<Registration>("registration")
+      .then(setRegistrationData)
+      .finally(() => setLoading(false));
+  }, []);
 
   const isRegistered = userProfile?.registration?.registered === true;
 
@@ -55,24 +55,30 @@ export default function Registration() {
             </p>
 
             <div className={styles.tableWrapper}>
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>Registration Type</th>
-                    <th>Early Registration</th>
-                    <th>Late / Onsite Registration</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {registrationData.map((row, index) => (
-                    <tr key={index}>
-                      <td>{row.type}</td>
-                      <td>{row.early}</td>
-                      <td>{row.late}</td>
+              {loading ? (
+                <p className="text-center text-gray-500 py-16">
+                  Loading registration information...
+                </p>
+              ) : (
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th>Registration Type</th>
+                      <th>Early Registration</th>
+                      <th>Late / Onsite Registration</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {registrationData.map((row, index) => (
+                      <tr key={index}>
+                        <td>{row.type}</td>
+                        <td>{row.early}</td>
+                        <td>{row.late}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
 

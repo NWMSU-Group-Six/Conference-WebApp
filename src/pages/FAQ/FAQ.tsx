@@ -30,7 +30,7 @@ export default function FAQ() {
 
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-8 my-10">
         {loading ? (
-          <p className="text-center text-gray-500 py-16">Loading speakers…</p>
+          <p className="text-center text-gray-500 py-16">Loading FAQ...</p>
         ) : (
           <Accordion type="single" collapsible className="w-full">
             {faqList.map((faq) => (
