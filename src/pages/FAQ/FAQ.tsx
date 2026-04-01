@@ -1,5 +1,6 @@
 import Hero from "@/components/custom/Hero";
 import styles from "./FAQ.module.css";
+import type { FAQ } from "@/models/FAQ";
 
 import {
   Accordion,
@@ -7,8 +8,16 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useEffect, useState } from "react";
 
 export default function FAQ() {
+  const [faq, setFAQ] = useState<FAQ[]>([]);
+
+  useEffect(() => {
+    getDataByCollection<FAQ>("faq")
+      .then(setFAQ)
+      .finally(() => setLoading(false));
+  }, []);
   return (
     <section>
       <Hero
@@ -76,4 +85,7 @@ export default function FAQ() {
       </div>
     </section>
   );
+}
+function setLoading(arg0: boolean) {
+  throw new Error("Function not implemented.");
 }
