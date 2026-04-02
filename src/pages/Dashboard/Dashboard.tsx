@@ -10,7 +10,11 @@ import {
   updateSubmissionStatus,
   assignReviewer,
 } from "@/firebase/services/submissionService";
-import { getAllUsers, updateUserRole, getReviewers } from "@/firebase/services/userService";
+import {
+  getAllUsers,
+  updateUserRole,
+  getReviewers,
+} from "@/firebase/services/userService";
 
 // ─── Status badge ──────────────────────────────────────────────────────────────
 const STATUS_COLORS: Record<string, string> = {
@@ -57,7 +61,9 @@ function AuthorView() {
           </p>
           <p className="text-sm text-gray-500">{userProfile?.email}</p>
           {userProfile?.profile.affiliation && (
-            <p className="text-sm text-gray-400">{userProfile.profile.affiliation}</p>
+            <p className="text-sm text-gray-400">
+              {userProfile.profile.affiliation}
+            </p>
           )}
         </div>
         <div className="ml-auto text-right">
@@ -134,7 +140,7 @@ function ReviewerView() {
   useEffect(() => {
     getAllSubmissions()
       .then((all) =>
-        setSubs(all.filter((s) => s.assignedReviewer === firebaseUser?.uid))
+        setSubs(all.filter((s) => s.assignedReviewer === firebaseUser?.uid)),
       )
       .finally(() => setLoading(false));
   }, [firebaseUser]);
@@ -147,7 +153,9 @@ function ReviewerView() {
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-gray-800 mb-4">Assigned Submissions</h2>
+      <h2 className="text-xl font-bold text-gray-800 mb-4">
+        Assigned Submissions
+      </h2>
       {loading ? (
         <p className="text-gray-400 py-8 text-center">Loading…</p>
       ) : subs.length === 0 ? (
@@ -157,11 +165,16 @@ function ReviewerView() {
       ) : (
         <div className="space-y-4">
           {subs.map((s) => (
-            <div key={s.id} className="bg-white border border-gray-200 rounded-xl p-5">
+            <div
+              key={s.id}
+              className="bg-white border border-gray-200 rounded-xl p-5"
+            >
               <div className="flex items-start justify-between gap-4 mb-3">
                 <div>
                   <p className="font-semibold text-gray-800">{s.title}</p>
-                  <p className="text-sm text-gray-500 mt-1">{s.abstract?.slice(0, 140)}…</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {s.abstract?.slice(0, 140)}…
+                  </p>
                 </div>
                 <StatusBadge status={s.status} />
               </div>
@@ -224,7 +237,9 @@ function AdminView() {
     setLoading(false);
   };
 
-  useEffect(() => { reload(); }, []);
+  useEffect(() => {
+    reload();
+  }, []);
 
   const handleRoleChange = async (uid: string, role: UserRole) => {
     const user = users.find((u) => u.uid === uid);
@@ -243,7 +258,10 @@ function AdminView() {
     reload();
   };
 
-  const handleStatusChange = async (subId: string, status: Submission["status"]) => {
+  const handleStatusChange = async (
+    subId: string,
+    status: Submission["status"],
+  ) => {
     await updateSubmissionStatus(subId, status);
     reload();
   };
@@ -286,7 +304,9 @@ function AdminView() {
               {subs.map((s) => (
                 <tr key={s.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3">
-                    <p className="font-medium text-gray-800 max-w-xs truncate">{s.title}</p>
+                    <p className="font-medium text-gray-800 max-w-xs truncate">
+                      {s.title}
+                    </p>
                     {s.fileUrl && (
                       <a
                         href={s.fileUrl}
@@ -298,14 +318,18 @@ function AdminView() {
                       </a>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-gray-500 text-xs">{s.submitterEmail}</td>
+                  <td className="px-4 py-3 text-gray-500 text-xs">
+                    {s.submitterEmail}
+                  </td>
                   <td className="px-4 py-3">
                     <StatusBadge status={s.status} />
                   </td>
                   <td className="px-4 py-3">
                     <select
                       defaultValue={s.assignedReviewer ?? ""}
-                      onChange={(e) => handleAssignReviewer(s.id!, e.target.value)}
+                      onChange={(e) =>
+                        handleAssignReviewer(s.id!, e.target.value)
+                      }
                       className="border border-gray-200 rounded-md px-2 py-1 text-xs focus:outline-none focus:border-[#006a4e]"
                     >
                       <option value="">— assign reviewer —</option>
@@ -320,7 +344,10 @@ function AdminView() {
                     <select
                       value={s.status}
                       onChange={(e) =>
-                        handleStatusChange(s.id!, e.target.value as Submission["status"])
+                        handleStatusChange(
+                          s.id!,
+                          e.target.value as Submission["status"],
+                        )
                       }
                       className="border border-gray-200 rounded-md px-2 py-1 text-xs focus:outline-none focus:border-[#006a4e]"
                     >
@@ -334,7 +361,10 @@ function AdminView() {
               ))}
               {subs.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-4 py-10 text-center text-gray-400">
+                  <td
+                    colSpan={5}
+                    className="px-4 py-10 text-center text-gray-400"
+                  >
                     No submissions yet.
                   </td>
                 </tr>
@@ -414,10 +444,9 @@ export default function Dashboard() {
   const isAdmin = userProfile?.roles?.includes("admin");
   const isReviewer = userProfile?.roles?.includes("reviewer");
 
-  const displayName =
-    userProfile
-      ? `${userProfile.profile.firstName} ${userProfile.profile.lastName}`
-      : firebaseUser.email ?? "User";
+  const displayName = userProfile
+    ? `${userProfile.profile.firstName} ${userProfile.profile.lastName}`
+    : (firebaseUser.email ?? "User");
 
   return (
     <>
@@ -430,18 +459,12 @@ export default function Dashboard() {
         </div>
       </section>
 
-      <div className="max-w-5xl mx-auto px-6 py-10">
-        {isAdmin ? (
-          <AdminView />
-        ) : isReviewer ? (
-          <div className="space-y-10">
-            <AuthorView />
-            <hr className="border-gray-200" />
-            <ReviewerView />
-          </div>
-        ) : (
-          <AuthorView />
-        )}
+      <div className="max-w-5xl mx-auto px-6 py-10 space-y-10">
+        {isAdmin && <AdminView />}
+        {isAdmin && isReviewer && <hr className="border-gray-200" />}
+        {isReviewer && <ReviewerView />}
+        {isReviewer && <hr className="border-gray-200" />}
+        <AuthorView />
       </div>
     </>
   );
