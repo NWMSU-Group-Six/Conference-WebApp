@@ -49,6 +49,7 @@ function AuthorView() {
 
   return (
     <div className="space-y-8">
+      <h1 className="text-3xl font-bold text-[#006a4e]">Author Dashboard</h1>
       {/* Profile card */}
       <div className="bg-white border border-gray-200 rounded-2xl p-6 flex gap-5 items-center">
         <div className="w-14 h-14 rounded-full bg-[#006a4e] flex items-center justify-center text-white font-bold text-lg">
@@ -153,6 +154,9 @@ function ReviewerView() {
 
   return (
     <div>
+      <h1 className="text-3xl font-bold text-[#006a4e] pb-3">
+        Reviewer Dashboard
+      </h1>
       <h2 className="text-xl font-bold text-gray-800 mb-4">
         Assigned Submissions
       </h2>
@@ -268,6 +272,9 @@ function AdminView() {
 
   return (
     <div>
+      <h1 className="text-3xl font-bold text-[#006a4e] pb-3">
+        Admin Dashboard
+      </h1>
       {/* Tab switcher */}
       <div className="flex gap-2 mb-6">
         {(["submissions", "users"] as const).map((t) => (
