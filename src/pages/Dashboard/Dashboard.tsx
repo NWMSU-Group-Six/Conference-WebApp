@@ -15,6 +15,8 @@ import {
   updateUserRole,
   getReviewers,
 } from "@/firebase/services/userService";
+import type { GeneralInfo } from "@/models/GeneralInfo";
+import { getGeneralInfo } from "@/firebase/services/generalInfoService";
 
 // ─── Status badge ──────────────────────────────────────────────────────────────
 const STATUS_COLORS: Record<string, string> = {
@@ -228,16 +230,20 @@ function AdminView() {
   const [reviewers, setReviewers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<"submissions" | "users">("submissions");
+  const [info, setInfo] = useState<GeneralInfo | null>(null);
+  const [title, setTitle] = useState<string>("");
 
   const reload = async () => {
-    const [u, s, r] = await Promise.all([
+    const [u, s, r, i] = await Promise.all([
       getAllUsers(),
       getAllSubmissions(),
       getReviewers(),
+      getGeneralInfo("2026"),
     ]);
     setUsers(u);
     setSubs(s);
     setReviewers(r);
+    setInfo(i as GeneralInfo);
     setLoading(false);
   };
 
@@ -269,6 +275,11 @@ function AdminView() {
     await updateSubmissionStatus(subId, status);
     reload();
   };
+
+  function conferenceManagementSubmit(formData) {
+    const title = formData.get("title");
+    alert(`Your title is '${title}'`);
+  }
 
   return (
     <div>
@@ -433,6 +444,26 @@ function AdminView() {
           </table>
         </div>
       )}
+      {/* Conference Information Table */}
+      <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden p-3 mt-5">
+        <h2 className="text-xl font-bold text-[#006a4e] pb-3">
+          Conference Information Management
+        </h2>
+        <div className="flex flex-row gap-2">
+          <form action={conferenceManagementSubmit}>
+            <label className="px-4 py-3 font-medium text-gray-800">
+              Conference Title:
+            </label>
+            <input
+              type="text"
+              name="title"
+              className="border border-gray-200 rounded-md p-1"
+            ></input>
+            <button type="submit">Submit</button>
+          </form>
+          <p className="px-4 py-3 font-medium text-gray-800">{title}</p>
+        </div>
+      </div>
     </div>
   );
 }
