@@ -9,6 +9,7 @@ import {
   addReviewNotes,
   updateSubmissionStatus,
   assignReviewer,
+  totalScore as saveTotalScore,
 } from "@/firebase/services/submissionService";
 import {
   getAllUsers,
@@ -27,7 +28,9 @@ const STATUS_COLORS: Record<string, string> = {
 function StatusBadge({ status }: { status: string }) {
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-600"}`}
+      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+        STATUS_COLORS[status] ?? "bg-gray-100 text-gray-600"
+      }`}
     >
       {status.replace("_", " ")}
     </span>
@@ -42,6 +45,7 @@ function AuthorView() {
 
   useEffect(() => {
     if (!firebaseUser) return;
+
     getSubmissionsByUser(firebaseUser.uid)
       .then(setSubs)
       .finally(() => setLoading(false));
@@ -50,12 +54,13 @@ function AuthorView() {
   return (
     <div className="space-y-8">
       <h1 className="text-3xl font-bold text-[#006a4e]">Author Dashboard</h1>
-      {/* Profile card */}
+
       <div className="bg-white border border-gray-200 rounded-2xl p-6 flex gap-5 items-center">
         <div className="w-14 h-14 rounded-full bg-[#006a4e] flex items-center justify-center text-white font-bold text-lg">
           {userProfile?.profile.firstName?.[0]}
           {userProfile?.profile.lastName?.[0]}
         </div>
+
         <div>
           <p className="font-bold text-gray-800 text-lg">
             {userProfile?.profile.firstName} {userProfile?.profile.lastName}
@@ -67,6 +72,7 @@ function AuthorView() {
             </p>
           )}
         </div>
+
         <div className="ml-auto text-right">
           {userProfile?.registration?.registered ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-medium">
@@ -83,7 +89,6 @@ function AuthorView() {
         </div>
       </div>
 
-      {/* Submissions */}
       <div>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-gray-800">My Submissions</h2>
@@ -138,18 +143,68 @@ function ReviewerView() {
   const [notesMap, setNotesMap] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState<string | null>(null);
 
+  const [ratingsMap, setRatingsMap] = useState<
+    Record<string, Record<string, number>>
+  >({});
+
+  const categories = [
+    "Originality",
+    "Clarity",
+    "Impact",
+    "Technical",
+    "awesomeness",
+  ];
+
   useEffect(() => {
     getAllSubmissions()
-      .then((all) =>
-        setSubs(all.filter((s) => s.assignedReviewer === firebaseUser?.uid)),
-      )
+      .then((all) => {
+        const assigned = all.filter(
+          (s) => s.assignedReviewer === firebaseUser?.uid,
+        );
+
+        setSubs(assigned);
+
+        const initialNotes: Record<string, string> = {};
+        for (const submission of assigned) {
+          if (submission.id) {
+            initialNotes[submission.id] = submission.reviewNotes ?? "";
+          }
+        }
+        setNotesMap(initialNotes);
+      })
       .finally(() => setLoading(false));
   }, [firebaseUser]);
 
   const saveNotes = async (id: string) => {
     setSaving(id);
-    await addReviewNotes(id, notesMap[id] ?? "");
-    setSaving(null);
+
+    try {
+      const reviewNotes = notesMap[id] ?? "";
+      const submissionRatings = ratingsMap[id] ?? {};
+      const total = Object.values(submissionRatings).reduce(
+        (a, b) => a + b,
+        0,
+      );
+
+      await addReviewNotes(id, reviewNotes);
+      await saveTotalScore(id, total);
+
+      setSubs((prev) =>
+        prev.map((sub) =>
+          sub.id === id
+            ? {
+                ...sub,
+                reviewNotes,
+                totalRating: total,
+              }
+            : sub,
+        ),
+      );
+    } catch (err) {
+      console.error("Save failed:", err);
+    } finally {
+      setSaving(null);
+    }
   };
 
   return (
@@ -160,6 +215,7 @@ function ReviewerView() {
       <h2 className="text-xl font-bold text-gray-800 mb-4">
         Assigned Submissions
       </h2>
+
       {loading ? (
         <p className="text-gray-400 py-8 text-center">Loading…</p>
       ) : subs.length === 0 ? (
@@ -168,53 +224,107 @@ function ReviewerView() {
         </p>
       ) : (
         <div className="space-y-4">
-          {subs.map((s) => (
-            <div
-              key={s.id}
-              className="bg-white border border-gray-200 rounded-xl p-5"
-            >
-              <div className="flex items-start justify-between gap-4 mb-3">
-                <div>
-                  <p className="font-semibold text-gray-800">{s.title}</p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    {s.abstract?.slice(0, 140)}…
-                  </p>
+          {subs.map((s) => {
+            const submissionRatings = ratingsMap[s.id!] || {};
+            const total = Object.values(submissionRatings).reduce(
+              (a, b) => a + b,
+              0,
+            );
+
+            return (
+              <div
+                key={s.id}
+                className="bg-white border border-gray-200 rounded-xl p-5"
+              >
+                <div className="flex items-start justify-between gap-4 mb-3">
+                  <div>
+                    <p className="font-semibold text-gray-800">{s.title}</p>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {s.abstract?.slice(0, 140)}…
+                    </p>
+                  </div>
+                  <StatusBadge status={s.status} />
                 </div>
-                <StatusBadge status={s.status} />
+
+                {s.fileUrl && (
+                  <a
+                    href={s.fileUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm text-[#006a4e] underline mb-3 inline-block"
+                  >
+                    View PDF ↗
+                  </a>
+                )}
+
+                <div className="mt-3 space-y-3">
+                  <label className="block text-xs font-semibold text-gray-600">
+                    Ratings
+                  </label>
+
+                  {categories.map((cat) => (
+                    <div key={cat}>
+                      <p className="text-xs text-gray-500 mb-1">{cat}</p>
+
+                      <div className="flex gap-2">
+                        {[1, 2, 3, 4, 5].map((num) => (
+                          <button
+                            key={num}
+                            type="button"
+                            onClick={() =>
+                              setRatingsMap((m) => ({
+                                ...m,
+                                [s.id!]: {
+                                  ...(m[s.id!] || {}),
+                                  [cat]: num,
+                                },
+                              }))
+                            }
+                            className={`w-8 h-8 rounded-md border text-sm font-semibold ${
+                              ratingsMap[s.id!]?.[cat] === num
+                                ? "bg-[#006a4e] text-white border-[#006a4e]"
+                                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                            }`}
+                          >
+                            {num}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+
+                  <p className="text-xs text-gray-500 mt-2">Total Score: {total}</p>
+                </div>
+
+                <div className="mt-3">
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">
+                    Review Notes
+                  </label>
+
+                  <textarea
+                    rows={3}
+                    value={notesMap[s.id!] ?? ""}
+                    onChange={(e) =>
+                      setNotesMap((m) => ({
+                        ...m,
+                        [s.id!]: e.target.value,
+                      }))
+                    }
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#006a4e]"
+                    placeholder="Enter your review notes…"
+                  />
+
+                  <button
+                    onClick={() => saveNotes(s.id!)}
+                    disabled={saving === s.id}
+                    className="mt-2 px-4 py-1.5 bg-[#006a4e] text-white text-xs font-medium rounded-lg hover:bg-[#00543d] transition-colors disabled:opacity-60"
+                  >
+                    {saving === s.id ? "Saving…" : "Save Notes"}
+                  </button>
+                </div>
               </div>
-              {s.fileUrl && (
-                <a
-                  href={s.fileUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm text-[#006a4e] underline mb-3 inline-block"
-                >
-                  View PDF ↗
-                </a>
-              )}
-              <div className="mt-3">
-                <label className="block text-xs font-semibold text-gray-600 mb-1">
-                  Review Notes
-                </label>
-                <textarea
-                  rows={3}
-                  defaultValue={s.reviewNotes ?? ""}
-                  onChange={(e) =>
-                    setNotesMap((m) => ({ ...m, [s.id!]: e.target.value }))
-                  }
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#006a4e]"
-                  placeholder="Enter your review notes…"
-                />
-                <button
-                  onClick={() => saveNotes(s.id!)}
-                  disabled={saving === s.id}
-                  className="mt-2 px-4 py-1.5 bg-[#006a4e] text-white text-xs font-medium rounded-lg hover:bg-[#00543d] transition-colors disabled:opacity-60"
-                >
-                  {saving === s.id ? "Saving…" : "Save Notes"}
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
@@ -235,6 +345,7 @@ function AdminView() {
       getAllSubmissions(),
       getReviewers(),
     ]);
+
     setUsers(u);
     setSubs(s);
     setReviewers(r);
@@ -248,10 +359,12 @@ function AdminView() {
   const handleRoleChange = async (uid: string, role: UserRole) => {
     const user = users.find((u) => u.uid === uid);
     if (!user) return;
+
     const current = user.roles ?? [];
     const updated: UserRole[] = current.includes(role)
       ? current.filter((r) => r !== role)
       : [...current, role];
+
     await updateUserRole(uid, updated);
     reload();
   };
@@ -275,7 +388,7 @@ function AdminView() {
       <h1 className="text-3xl font-bold text-[#006a4e] pb-3">
         Admin Dashboard
       </h1>
-      {/* Tab switcher */}
+
       <div className="flex gap-2 mb-6">
         {(["submissions", "users"] as const).map((t) => (
           <button
@@ -295,7 +408,6 @@ function AdminView() {
       {loading ? (
         <p className="text-gray-400 text-center py-12">Loading…</p>
       ) : tab === "submissions" ? (
-        /* Submissions table */
         <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-600 text-xs font-semibold">
@@ -307,6 +419,7 @@ function AdminView() {
                 <th className="px-4 py-3 text-left">Actions</th>
               </tr>
             </thead>
+
             <tbody className="divide-y divide-gray-100">
               {subs.map((s) => (
                 <tr key={s.id} className="hover:bg-gray-50">
@@ -325,12 +438,15 @@ function AdminView() {
                       </a>
                     )}
                   </td>
+
                   <td className="px-4 py-3 text-gray-500 text-xs">
                     {s.submitterEmail}
                   </td>
+
                   <td className="px-4 py-3">
                     <StatusBadge status={s.status} />
                   </td>
+
                   <td className="px-4 py-3">
                     <select
                       defaultValue={s.assignedReviewer ?? ""}
@@ -347,6 +463,7 @@ function AdminView() {
                       ))}
                     </select>
                   </td>
+
                   <td className="px-4 py-3">
                     <select
                       value={s.status}
@@ -366,6 +483,7 @@ function AdminView() {
                   </td>
                 </tr>
               ))}
+
               {subs.length === 0 && (
                 <tr>
                   <td
@@ -380,7 +498,6 @@ function AdminView() {
           </table>
         </div>
       ) : (
-        /* Users table */
         <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-600 text-xs font-semibold">
@@ -391,13 +508,18 @@ function AdminView() {
                 <th className="px-4 py-3 text-left">Toggle Role</th>
               </tr>
             </thead>
+
             <tbody className="divide-y divide-gray-100">
               {users.map((u) => (
                 <tr key={u.uid} className="hover:bg-gray-50">
                   <td className="px-4 py-3 font-medium text-gray-800">
                     {u.profile.firstName} {u.profile.lastName}
                   </td>
-                  <td className="px-4 py-3 text-gray-500 text-xs">{u.email}</td>
+
+                  <td className="px-4 py-3 text-gray-500 text-xs">
+                    {u.email}
+                  </td>
+
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap gap-1">
                       {u.roles?.map((r) => (
@@ -410,6 +532,7 @@ function AdminView() {
                       ))}
                     </div>
                   </td>
+
                   <td className="px-4 py-3">
                     <div className="flex gap-1.5">
                       {(["reviewer", "admin"] as UserRole[]).map((role) => (

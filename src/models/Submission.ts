@@ -9,6 +9,7 @@ export type SubmissionAuthor = {
   email: string;
   affiliation: string;
 };
+export type SubmissionRatings = Record<string, number>;
 
 export type Submission = {
   id?: string;

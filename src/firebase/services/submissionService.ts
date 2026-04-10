@@ -48,6 +48,26 @@ export const assignReviewer = async (
   });
 };
 
+/** Add / update review notes and ratings on a submission. */
+export const addReview = async (
+  submissionId: string,
+  notes: string,
+  ratings: Submission["ratings"],
+  ): Promise<void> => {
+  await updateDoc(doc(db, COL, submissionId), { reviewNotes: notes });
+};
+
+
+export const totalScore = async (
+  submissionId: string,
+  Score: string,
+): Promise<void> => {
+  await updateDoc(doc(db, COL, submissionId), { totalScore: Score });
+};
+
+
+
+
 /** Add / update review notes on a submission. */
 export const addReviewNotes = async (
   submissionId: string,
