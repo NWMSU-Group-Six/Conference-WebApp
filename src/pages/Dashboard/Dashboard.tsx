@@ -16,7 +16,10 @@ import {
   getReviewers,
 } from "@/firebase/services/userService";
 import type { GeneralInfo } from "@/models/GeneralInfo";
-import { getGeneralInfo } from "@/firebase/services/generalInfoService";
+import {
+  getGeneralInfo,
+  modifyValue,
+} from "@/firebase/services/generalInfoService";
 
 // ─── Status badge ──────────────────────────────────────────────────────────────
 const STATUS_COLORS: Record<string, string> = {
@@ -277,8 +280,9 @@ function AdminView() {
   };
 
   function conferenceManagementSubmit(formData) {
+    console.log(formData);
     const title = formData.get("title");
-    alert(`Your title is '${title}'`);
+    modifyValue("generalInfo", "2026", "conferenceName", title);
   }
 
   return (
@@ -459,7 +463,12 @@ function AdminView() {
               name="title"
               className="border border-gray-200 rounded-md p-1"
             ></input>
-            <button type="submit">Submit</button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-[#006a4e] text-white text-sm font-medium rounded-lg hover:bg-[#00543d] transition-colors"
+            >
+              Submit
+            </button>
           </form>
           <p className="px-4 py-3 font-medium text-gray-800">{title}</p>
         </div>
