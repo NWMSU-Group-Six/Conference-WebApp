@@ -49,13 +49,16 @@ function renderField(key: string, value: any, path: string[] = []) {
     const formatted = value.toDate().toISOString().split("T")[0];
 
     return (
-      <div key={fullPath}>
-        <label>{key}</label>
+      <div key={fullPath} className="flex flex-row items-center">
+        <label className="pr-2">
+          {key[0].toUpperCase() +
+            key.slice(1).replace(/([a-z])([A-Z])/g, "$1 $2")}
+        </label>
         <input
           name={fullPath}
           type="date"
           defaultValue={formatted}
-          className="p-1 m-1 border rounded-lg"
+          className="ml-auto p-1 m-1 border rounded-lg"
         />
       </div>
     );
@@ -66,9 +69,17 @@ function renderField(key: string, value: any, path: string[] = []) {
     const formatted = value.toISOString().split("T")[0];
 
     return (
-      <div key={fullPath}>
-        <label>{key}</label>
-        <input name={fullPath} type="date" defaultValue={formatted} />
+      <div key={fullPath} className="flex flex-row items-center">
+        <label>
+          {key[0].toUpperCase() +
+            key.slice(1).replace(/([a-z])([A-Z])/g, "$1 $2")}
+        </label>
+        <input
+          name={fullPath}
+          type="date"
+          defaultValue={formatted}
+          className="border border-gray-200 rounded-md p-1 m-1 ml-auto"
+        />
       </div>
     );
   }
@@ -76,9 +87,17 @@ function renderField(key: string, value: any, path: string[] = []) {
   // Handle Boolean
   if (typeof value === "boolean") {
     return (
-      <div key={fullPath}>
-        <label>{key}</label>
-        <input name={fullPath} type="checkbox" defaultChecked={value} />
+      <div key={fullPath} className="flex flex-row items-center">
+        <label>
+          {key[0].toUpperCase() +
+            key.slice(1).replace(/([a-z])([A-Z])/g, "$1 $2")}
+        </label>
+        <input
+          name={fullPath}
+          type="checkbox"
+          defaultChecked={value}
+          className="m-3 ml-auto"
+        />
       </div>
     );
   }
@@ -87,7 +106,7 @@ function renderField(key: string, value: any, path: string[] = []) {
   if (typeof value === "object" && value !== null && !Array.isArray(value)) {
     return (
       <div key={fullPath} className="py-4">
-        <h3 className="font-semibold">{key}</h3>
+        <h3 className="font-semibold">{key[0].toUpperCase() + key.slice(1)}</h3>
         {Object.entries(value).map(([k, v]) =>
           renderField(k, v, [...path, key]),
         )}
@@ -97,12 +116,15 @@ function renderField(key: string, value: any, path: string[] = []) {
 
   // Default input
   return (
-    <div key={fullPath}>
-      <label>{key}</label>
+    <div key={fullPath} className="flex flex-row items-center">
+      <label>
+        {key[0].toUpperCase() +
+          key.slice(1).replace(/([a-z])([A-Z])/g, "$1 $2")}
+      </label>
       <input
         name={fullPath}
         defaultValue={value ?? ""}
-        className="border border-gray-200 rounded-md p-1 m-1"
+        className="border border-gray-200 rounded-md p-1 m-1 ml-auto"
       />
     </div>
   );
