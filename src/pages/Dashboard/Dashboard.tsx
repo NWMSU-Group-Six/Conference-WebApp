@@ -20,6 +20,8 @@ import {
   getGeneralInfo,
   modifyValue,
 } from "@/firebase/services/generalInfoService";
+import { doc, Timestamp, updateDoc } from "firebase/firestore";
+import { db } from "@/firebase/firebase";
 
 // ─── Status badge ──────────────────────────────────────────────────────────────
 const STATUS_COLORS: Record<string, string> = {
@@ -38,6 +40,120 @@ function StatusBadge({ status }: { status: string }) {
     </span>
   );
 }
+
+function renderField(key: string, value: any, path: string[] = []) {
+  const fullPath = [...path, key].join(".");
+
+  // Handle Firestore Timestamp
+  if (value instanceof Timestamp) {
+    const formatted = value.toDate().toISOString().split("T")[0];
+
+    return (
+      <div key={fullPath}>
+        <label>{key}</label>
+        <input
+          name={fullPath}
+          type="date"
+          defaultValue={formatted}
+          className="p-1 m-1 border rounded-lg"
+        />
+      </div>
+    );
+  }
+
+  // Handle Date
+  if (value instanceof Date) {
+    const formatted = value.toISOString().split("T")[0];
+
+    return (
+      <div key={fullPath}>
+        <label>{key}</label>
+        <input name={fullPath} type="date" defaultValue={formatted} />
+      </div>
+    );
+  }
+
+  // Handle Boolean
+  if (typeof value === "boolean") {
+    return (
+      <div key={fullPath}>
+        <label>{key}</label>
+        <input name={fullPath} type="checkbox" defaultChecked={value} />
+      </div>
+    );
+  }
+
+  // Handle nested object
+  if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    return (
+      <div key={fullPath} className="py-4">
+        <h3 className="font-semibold">{key}</h3>
+        {Object.entries(value).map(([k, v]) =>
+          renderField(k, v, [...path, key]),
+        )}
+      </div>
+    );
+  }
+
+  // Default input
+  return (
+    <div key={fullPath}>
+      <label>{key}</label>
+      <input
+        name={fullPath}
+        defaultValue={value ?? ""}
+        className="border border-gray-200 rounded-md p-1 m-1"
+      />
+    </div>
+  );
+}
+
+function setDeep(obj: any, path: string, value: any) {
+  const keys = path.split(".");
+  let current = obj;
+
+  keys.forEach((key, i) => {
+    if (i === keys.length - 1) {
+      current[key] = value;
+    } else {
+      current[key] = current[key] || {};
+      current = current[key];
+    }
+  });
+}
+
+const convertDates = (obj: any) => {
+  for (const key in obj) {
+    if (obj[key] instanceof Date) {
+      obj[key] = Timestamp.fromDate(obj[key]);
+    } else if (typeof obj[key] === "object") {
+      convertDates(obj[key]);
+    }
+  }
+};
+
+const convertDateStringsToTimestamps = (obj: any): any => {
+  if (obj && typeof obj === "object") {
+    const result: any = {};
+
+    for (const key in obj) {
+      const value = obj[key];
+
+      // Detect date string (YYYY-MM-DD)
+      if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        result[key] = Timestamp.fromDate(new Date(`${value}T00:00:00`));
+      } else if (typeof value === "object") {
+        result[key] = convertDateStringsToTimestamps(value);
+      } else {
+        result[key] = value;
+      }
+    }
+
+    return result;
+  }
+
+  return obj;
+};
 
 // ─── Author view ───────────────────────────────────────────────────────────────
 function AuthorView() {
@@ -279,11 +395,20 @@ function AdminView() {
     reload();
   };
 
-  function conferenceManagementSubmit(formData) {
-    console.log(formData);
-    const title = formData.get("title");
-    modifyValue("generalInfo", "2026", "conferenceName", title);
-  }
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const result: any = {};
+
+    formData.forEach((value, key) => {
+      setDeep(result, key, value);
+    });
+
+    const converted = convertDateStringsToTimestamps(result);
+
+    updateDoc(doc(db, "generalInfo", "2026"), converted);
+  };
 
   return (
     <div>
@@ -454,22 +579,20 @@ function AdminView() {
           Conference Information Management
         </h2>
         <div className="flex flex-row gap-2">
-          <form action={conferenceManagementSubmit}>
-            <label className="px-4 py-3 font-medium text-gray-800">
-              Conference Title:
-            </label>
-            <input
-              type="text"
-              name="title"
-              className="border border-gray-200 rounded-md p-1"
-            ></input>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-[#006a4e] text-white text-sm font-medium rounded-lg hover:bg-[#00543d] transition-colors"
-            >
-              Submit
-            </button>
-          </form>
+          {info && (
+            <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+              {Object.entries(info).map(([key, value]) =>
+                renderField(key, value),
+              )}
+
+              <button
+                type="submit"
+                className="px-4 py-2 bg-[#006a4e] text-white text-sm font-medium rounded-lg hover:bg-[#00543d] transition-colors"
+              >
+                Save
+              </button>
+            </form>
+          )}
           <p className="px-4 py-3 font-medium text-gray-800">{title}</p>
         </div>
       </div>
