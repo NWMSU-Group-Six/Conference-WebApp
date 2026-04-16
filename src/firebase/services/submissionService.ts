@@ -12,6 +12,7 @@ import { db } from "../firebase";
 import type { Submission } from "@/models/Submission";
 
 const COL = "submissions";
+const USER_COL = "users";
 
 /** Create a new submission document. Returns the new document id. */
 export const createSubmission = async (

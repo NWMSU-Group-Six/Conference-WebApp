@@ -1,3 +1,5 @@
+import type { Timestamp } from "firebase/firestore";
+
 export type SubmissionStatus =
   | "submitted"
   | "under_review"
@@ -25,7 +27,7 @@ export type Submission = {
   /** uid of the submitting user */
   submittedBy: string;
   submitterEmail: string;
-  submittedAt?: Date;
+  submittedAt?: Timestamp;
   assignedReviewer?: string;
   reviewNotes?: string;
 };
