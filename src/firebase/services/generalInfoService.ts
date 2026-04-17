@@ -1,4 +1,4 @@
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 
 export const getGeneralInfo = async <GeneralInfo>(
@@ -19,4 +19,15 @@ export const getGeneralInfo = async <GeneralInfo>(
     console.error("Error fetching general info:", error);
     throw error;
   }
+};
+
+export const modifyValue = async (
+  collection: string,
+  documentId: string,
+  key: string,
+  value: string,
+): Promise<void> => {
+  await updateDoc(doc(db, collection, documentId), {
+    [key]: value,
+  });
 };

@@ -95,11 +95,10 @@ function Home() {
               Advancing Knowledge at Northwest
             </h2>
             <p className={styles.bodyText}>
-              The Northwest Conference 2026 is an annual gathering hosted by
-              Northwest Missouri State University. The event unites scholars,
-              practitioners, and students from across the region to share
-              cutting-edge research in computing, engineering, and related
-              disciplines.
+              The {info?.conferenceName} is an annual gathering hosted by{" "}
+              {info?.venue}. The event unites scholars, practitioners, and
+              students from across the region to share cutting-edge research in
+              computing, engineering, and related disciplines.
             </p>
             <p className={styles.bodyText}>
               From keynote addresses to peer-reviewed paper sessions and
