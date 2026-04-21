@@ -9,6 +9,7 @@ import {
   serverTimestamp,
   increment,
   getDoc,
+  deleteField,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import type { ReviewRubric, Submission } from "@/models/Submission";
@@ -16,6 +17,24 @@ import type { User } from "@/models/User";
 
 const COL = "submissions";
 const USER_COL = "users";
+
+const getAssignedReviewerIds = (
+  submissionData?: Partial<Submission>,
+): string[] => {
+  const ids = new Set<string>();
+
+  if (submissionData?.assignedReviewer) {
+    ids.add(submissionData.assignedReviewer);
+  }
+
+  if (Array.isArray(submissionData?.assignedReviewers)) {
+    submissionData.assignedReviewers.forEach((uid) => {
+      if (uid) ids.add(uid);
+    });
+  }
+
+  return Array.from(ids);
+};
 
 const pickReviewerForSubmission = async (
   submission: Omit<Submission, "id" | "submittedAt">,
@@ -71,6 +90,7 @@ export const createSubmission = async (
   if (reviewerUid) {
     await updateDoc(doc(db, COL, ref.id), {
       assignedReviewer: reviewerUid,
+      assignedReviewers: [reviewerUid],
       status: "under_review",
     });
 
@@ -101,31 +121,56 @@ export const assignReviewer = async (
   newReviewerUid: string,
 ): Promise<void> => {
   const submissionRef = doc(db, COL, submissionId);
-
-  // 1. Fetch current submission
   const submissionSnap = await getDoc(submissionRef);
+  if (!submissionSnap.exists()) return;
 
-  if (submissionSnap.exists()) {
-    const submissionData = submissionSnap.data();
-    const oldReviewerUid = submissionData?.assignedReviewer;
+  const submissionData = submissionSnap.data() as Partial<Submission>;
+  const assignedReviewerIds = getAssignedReviewerIds(submissionData);
 
-    // 2. Decrement old reviewer if different
-    if (oldReviewerUid && oldReviewerUid !== newReviewerUid) {
-      await updateDoc(doc(db, USER_COL, oldReviewerUid), {
-        currentAssignments: increment(-1),
-      });
-    }
-  }
+  if (assignedReviewerIds.includes(newReviewerUid)) return;
 
-  // 3. Assign new reviewer
+  const nextAssignedReviewers = [...assignedReviewerIds, newReviewerUid];
+
   await updateDoc(submissionRef, {
-    assignedReviewer: newReviewerUid,
+    assignedReviewer: nextAssignedReviewers[0],
+    assignedReviewers: nextAssignedReviewers,
     status: "under_review",
   });
 
-  // 4. Increment new reviewer
   await updateDoc(doc(db, USER_COL, newReviewerUid), {
     currentAssignments: increment(1),
+  });
+};
+
+/** Remove a reviewer assignment from a submission. */
+export const unassignReviewer = async (
+  submissionId: string,
+  reviewerUid: string,
+): Promise<void> => {
+  const submissionRef = doc(db, COL, submissionId);
+  const submissionSnap = await getDoc(submissionRef);
+
+  if (!submissionSnap.exists()) return;
+
+  const submissionData = submissionSnap.data() as Partial<Submission>;
+  const assignedReviewerIds = getAssignedReviewerIds(submissionData);
+
+  if (!assignedReviewerIds.includes(reviewerUid)) return;
+
+  const nextAssignedReviewers = assignedReviewerIds.filter(
+    (uid) => uid !== reviewerUid,
+  );
+
+  await updateDoc(submissionRef, {
+    assignedReviewer:
+      nextAssignedReviewers.length > 0
+        ? nextAssignedReviewers[0]
+        : deleteField(),
+    assignedReviewers: nextAssignedReviewers,
+  });
+
+  await updateDoc(doc(db, USER_COL, reviewerUid), {
+    currentAssignments: increment(-1),
   });
 };
 
@@ -140,6 +185,7 @@ export const addReviewNotes = async (
 /** Save notes + rubric scoring for a reviewer on a submission. */
 export const saveReviewFeedback = async (
   submissionId: string,
+  reviewerUid: string,
   notes: string,
   rubric: ReviewRubric,
 ): Promise<void> => {
@@ -149,7 +195,15 @@ export const saveReviewFeedback = async (
     rubric.relevance +
     rubric.clarity;
 
+  const reviewFieldPath = `reviewsByReviewer.${reviewerUid}`;
+
   await updateDoc(doc(db, COL, submissionId), {
+    [reviewFieldPath]: {
+      notes,
+      rubric,
+      score: reviewScore,
+      reviewedAt: serverTimestamp(),
+    },
     reviewNotes: notes,
     reviewRubric: rubric,
     reviewScore,

@@ -19,6 +19,13 @@ export type ReviewRubric = {
   clarity: number;
 };
 
+export type SubmissionReview = {
+  notes: string;
+  rubric: ReviewRubric;
+  score: number;
+  reviewedAt?: Timestamp;
+};
+
 export type Submission = {
   id?: string;
   title: string;
@@ -35,9 +42,14 @@ export type Submission = {
   submittedBy: string;
   submitterEmail: string;
   submittedAt?: Timestamp;
+  /** Legacy single reviewer field kept for backward compatibility. */
   assignedReviewer?: string;
+  /** Current reviewer assignment model (supports multiple reviewers). */
+  assignedReviewers?: string[];
   reviewNotes?: string;
   reviewRubric?: ReviewRubric;
   reviewScore?: number;
   reviewedAt?: Timestamp;
+  /** Per-reviewer saved feedback keyed by reviewer uid. */
+  reviewsByReviewer?: Record<string, SubmissionReview>;
 };

@@ -9,6 +9,7 @@ import {
   saveReviewFeedback,
   updateSubmissionStatus,
   assignReviewer,
+  unassignReviewer,
 } from "@/firebase/services/submissionService";
 import {
   getAllUsers,
@@ -62,6 +63,20 @@ const getRubricTotal = (rubric: ReviewRubric): number =>
   rubric.technicalQuality +
   rubric.relevance +
   rubric.clarity;
+
+const getAssignedReviewerIds = (submission: Submission): string[] => {
+  const ids = new Set<string>();
+
+  if (submission.assignedReviewer) {
+    ids.add(submission.assignedReviewer);
+  }
+
+  submission.assignedReviewers?.forEach((uid) => {
+    if (uid) ids.add(uid);
+  });
+
+  return Array.from(ids);
+};
 
 function StatusBadge({ status }: { status: string }) {
   return (
@@ -299,6 +314,7 @@ function UserView() {
 // ─── Reviewer view ─────────────────────────────────────────────────────────────
 function ReviewerView() {
   const { firebaseUser } = useAuth();
+  const reviewerUid = firebaseUser?.uid;
   const [subs, setSubs] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [notesMap, setNotesMap] = useState<Record<string, string>>({});
@@ -312,7 +328,7 @@ function ReviewerView() {
     getAllSubmissions()
       .then((all) => {
         const assigned = all.filter(
-          (s) => s.assignedReviewer === firebaseUser?.uid,
+          (s) => !!reviewerUid && getAssignedReviewerIds(s).includes(reviewerUid),
         );
 
         setSubs(assigned);
@@ -321,19 +337,35 @@ function ReviewerView() {
 
         assigned.forEach((s) => {
           if (!s.id) return;
-          initialNotes[s.id] = s.reviewNotes ?? "";
-          initialRubric[s.id] = normalizeReviewRubric(s.reviewRubric);
+          const existingReview = reviewerUid
+            ? s.reviewsByReviewer?.[reviewerUid]
+            : undefined;
+
+          initialNotes[s.id] = existingReview?.notes ?? s.reviewNotes ?? "";
+          initialRubric[s.id] = normalizeReviewRubric(
+            existingReview?.rubric ?? s.reviewRubric,
+          );
         });
 
         setNotesMap(initialNotes);
         setRubricMap(initialRubric);
       })
       .finally(() => setLoading(false));
-  }, [firebaseUser]);
+  }, [reviewerUid]);
 
   const getRubricForSubmission = (submission: Submission): ReviewRubric => {
-    if (!submission.id) return normalizeReviewRubric(submission.reviewRubric);
-    return rubricMap[submission.id] ?? normalizeReviewRubric(submission.reviewRubric);
+    const existingReview = reviewerUid
+      ? submission.reviewsByReviewer?.[reviewerUid]
+      : undefined;
+
+    if (!submission.id) {
+      return normalizeReviewRubric(existingReview?.rubric ?? submission.reviewRubric);
+    }
+
+    return (
+      rubricMap[submission.id] ??
+      normalizeReviewRubric(existingReview?.rubric ?? submission.reviewRubric)
+    );
   };
 
   const updateRubricCriterion = (
@@ -354,7 +386,7 @@ function ReviewerView() {
   };
 
   const saveNotes = async (id?: string) => {
-    if (!id) return;
+    if (!id || !reviewerUid) return;
 
     setSaving(id);
     setSaveFeedback((prev) => {
@@ -368,7 +400,7 @@ function ReviewerView() {
       const rubric = rubricMap[id] ?? DEFAULT_REVIEW_RUBRIC;
       const reviewScore = getRubricTotal(rubric);
 
-      await saveReviewFeedback(id, notes, rubric);
+      await saveReviewFeedback(id, reviewerUid, notes, rubric);
 
       setSubs((prev) =>
         prev.map((s) =>
@@ -378,6 +410,14 @@ function ReviewerView() {
                 reviewNotes: notes,
                 reviewRubric: rubric,
                 reviewScore,
+                reviewsByReviewer: {
+                  ...(s.reviewsByReviewer ?? {}),
+                  [reviewerUid]: {
+                    notes,
+                    rubric,
+                    score: reviewScore,
+                  },
+                },
               }
             : s,
         ),
@@ -534,6 +574,7 @@ function AdminView() {
   const [subs, setSubs] = useState<Submission[]>([]);
   const [reviewers, setReviewers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [assigningSubmissionId, setAssigningSubmissionId] = useState<string | null>(null);
   const [tab, setTab] = useState<"submissions" | "users">("submissions");
   const [info, setInfo] = useState<GeneralInfo | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -568,10 +609,24 @@ function AdminView() {
     reload();
   };
 
-  const handleAssignReviewer = async (subId: string, reviewerUid: string) => {
-    if (!reviewerUid) return;
-    await assignReviewer(subId, reviewerUid);
-    reload();
+  const handleToggleReviewerAssignment = async (
+    subId?: string,
+    reviewerUid?: string,
+    shouldAssign?: boolean,
+  ) => {
+    if (!subId || !reviewerUid || typeof shouldAssign !== "boolean") return;
+
+    setAssigningSubmissionId(subId);
+    try {
+      if (shouldAssign) {
+        await assignReviewer(subId, reviewerUid);
+      } else {
+        await unassignReviewer(subId, reviewerUid);
+      }
+      await reload();
+    } finally {
+      setAssigningSubmissionId(null);
+    }
   };
 
   const handleStatusChange = async (
@@ -655,7 +710,7 @@ function AdminView() {
                 <th className="px-4 py-3 text-left">Title</th>
                 <th className="px-4 py-3 text-left">Submitted By</th>
                 <th className="px-4 py-3 text-left">Status</th>
-                <th className="px-4 py-3 text-left">Assign Reviewer</th>
+                <th className="px-4 py-3 text-left">Assign Reviewers</th>
                 <th className="px-4 py-3 text-left">Actions</th>
               </tr>
             </thead>
@@ -684,20 +739,40 @@ function AdminView() {
                     <StatusBadge status={s.status} />
                   </td>
                   <td className="px-4 py-3">
-                    <select
-                      defaultValue={s.assignedReviewer ?? ""}
-                      onChange={(e) =>
-                        handleAssignReviewer(s.id!, e.target.value)
-                      }
-                      className="border border-gray-200 rounded-md px-2 py-1 text-xs focus:outline-none focus:border-[#006a4e]"
-                    >
-                      <option value="">— assign reviewer —</option>
-                      {reviewers.map((r) => (
-                        <option key={r.uid} value={r.uid}>
-                          {r.profile.firstName} {r.profile.lastName}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="max-h-28 overflow-y-auto pr-1 space-y-1.5">
+                      {reviewers.length === 0 ? (
+                        <p className="text-xs text-gray-400">No reviewers available</p>
+                      ) : (
+                        reviewers.map((r) => {
+                          const assignedReviewerIds = getAssignedReviewerIds(s);
+                          const isAssigned = assignedReviewerIds.includes(r.uid);
+
+                          return (
+                            <label
+                              key={r.uid}
+                              className="flex items-center gap-2 text-xs text-gray-700"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={isAssigned}
+                                disabled={assigningSubmissionId === s.id}
+                                onChange={(e) =>
+                                  handleToggleReviewerAssignment(
+                                    s.id,
+                                    r.uid,
+                                    e.target.checked,
+                                  )
+                                }
+                                className="h-3.5 w-3.5 accent-[#006a4e]"
+                              />
+                              <span>
+                                {r.profile.firstName} {r.profile.lastName}
+                              </span>
+                            </label>
+                          );
+                        })
+                      )}
+                    </div>
                   </td>
                   <td className="px-4 py-3">
                     <select
