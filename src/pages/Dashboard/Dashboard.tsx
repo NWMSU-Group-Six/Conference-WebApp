@@ -15,6 +15,13 @@ import {
   updateUserRole,
   getReviewers,
 } from "@/firebase/services/userService";
+import type { GeneralInfo } from "@/models/GeneralInfo";
+import {
+  getGeneralInfo,
+  modifyValue,
+} from "@/firebase/services/generalInfoService";
+import { doc, Timestamp, updateDoc } from "firebase/firestore";
+import { db } from "@/firebase/firebase";
 
 // ─── Status badge ──────────────────────────────────────────────────────────────
 const STATUS_COLORS: Record<string, string> = {
@@ -33,6 +40,133 @@ function StatusBadge({ status }: { status: string }) {
     </span>
   );
 }
+
+function renderField(key: string, value: any, path: string[] = []) {
+  const fullPath = [...path, key].join(".");
+
+  // Handle Firestore Timestamp
+  if (value instanceof Timestamp) {
+    const formatted = value.toDate().toISOString().split("T")[0];
+
+    return (
+      <div key={fullPath} className="flex flex-col gap-1">
+        <label className="text-xs font-semibold text-gray-600">
+          {key[0].toUpperCase() +
+            key.slice(1).replace(/([a-z])([A-Z])/g, "$1 $2")}
+        </label>
+        <input
+          name={fullPath}
+          type="date"
+          defaultValue={formatted}
+          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm 
+             focus:outline-none focus:ring-2 focus:ring-[#006a4e]"
+        />
+      </div>
+    );
+  }
+
+  // Handle Boolean
+  if (typeof value === "boolean") {
+    return (
+      <div key={fullPath} className="flex items-center justify-between">
+        <label className="text-sm font-medium text-gray-700">
+          {key[0].toUpperCase() +
+            key.slice(1).replace(/([a-z])([A-Z])/g, "$1 $2")}
+        </label>
+        <input
+          name={fullPath}
+          type="checkbox"
+          defaultChecked={value}
+          className="h-4 w-4 accent-[#006a4e]"
+        />
+      </div>
+    );
+  }
+
+  // Handle nested object
+  if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    return (
+      <div
+        key={fullPath}
+        className="col-span-full bg-white border border-gray-200 rounded-xl p-4 shadow-sm "
+      >
+        <h3 className="font-semibold text-gray-700 mb-3">
+          {key[0].toUpperCase() + key.slice(1)}
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {Object.entries(value).map(([k, v]) =>
+            renderField(k, v, [...path, key]),
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Default input
+  return (
+    <div key={fullPath} className="flex flex-col gap-1">
+      <label className="text-xs font-semibold text-gray-600">
+        {key[0].toUpperCase() +
+          key.slice(1).replace(/([a-z])([A-Z])/g, "$1 $2")}
+      </label>
+      <input
+        name={fullPath}
+        defaultValue={value ?? ""}
+        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm 
+               focus:outline-none focus:ring-2 focus:ring-[#006a4e] focus:border-[#006a4e] 
+               transition-all"
+      />
+    </div>
+  );
+}
+
+function setDeep(obj: any, path: string, value: any) {
+  const keys = path.split(".");
+  let current = obj;
+
+  keys.forEach((key, i) => {
+    if (i === keys.length - 1) {
+      current[key] = value;
+    } else {
+      current[key] = current[key] || {};
+      current = current[key];
+    }
+  });
+}
+
+const convertDates = (obj: any) => {
+  for (const key in obj) {
+    if (obj[key] instanceof Date) {
+      obj[key] = Timestamp.fromDate(obj[key]);
+    } else if (typeof obj[key] === "object") {
+      convertDates(obj[key]);
+    }
+  }
+};
+
+const convertDateStringsToTimestamps = (obj: any): any => {
+  if (obj && typeof obj === "object") {
+    const result: any = {};
+
+    for (const key in obj) {
+      const value = obj[key];
+
+      // Detect date string (YYYY-MM-DD)
+      if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        result[key] = Timestamp.fromDate(new Date(`${value}T00:00:00`));
+      } else if (typeof value === "object") {
+        result[key] = convertDateStringsToTimestamps(value);
+      } else {
+        result[key] = value;
+      }
+    }
+
+    return result;
+  }
+
+  return obj;
+};
 
 // ─── Author view ───────────────────────────────────────────────────────────────
 function AuthorView() {
@@ -228,16 +362,21 @@ function AdminView() {
   const [reviewers, setReviewers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<"submissions" | "users">("submissions");
+  const [info, setInfo] = useState<GeneralInfo | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const reload = async () => {
-    const [u, s, r] = await Promise.all([
+    const [u, s, r, i] = await Promise.all([
       getAllUsers(),
       getAllSubmissions(),
       getReviewers(),
+      getGeneralInfo("2026"),
     ]);
     setUsers(u);
     setSubs(s);
     setReviewers(r);
+    setInfo(i as GeneralInfo);
     setLoading(false);
   };
 
@@ -269,6 +408,47 @@ function AdminView() {
     await updateSubmissionStatus(subId, status);
     reload();
   };
+
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    const formData = new FormData(e.currentTarget);
+    const result: any = {};
+
+    formData.forEach((value, key) => {
+      setDeep(result, key, value === "on" ? true : value);
+    });
+
+    const inputs = e.currentTarget.querySelectorAll("input[type='checkbox']");
+
+    inputs.forEach((input: any) => {
+      const name = input.name;
+
+      // If checkbox name NOT in FormData → it's unchecked
+      if (!formData.has(name)) {
+        setDeep(result, name, false);
+      }
+    });
+
+    const converted = convertDateStringsToTimestamps(result);
+
+    await updateDoc(doc(db, "generalInfo", "2026"), converted);
+    setIsSubmitting(false);
+    setIsSubmitted(true);
+  };
+
+  const FIELD_ORDER = [
+    "conferenceName",
+    "theme",
+    "description",
+    "timezone",
+    "venue",
+    "contact",
+    "importantDates",
+    "location",
+    "registration",
+    "links",
+  ];
 
   return (
     <div>
@@ -411,20 +591,24 @@ function AdminView() {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex gap-1.5">
-                      {(["reviewer", "admin"] as UserRole[]).map((role) => (
-                        <button
-                          key={role}
-                          onClick={() => handleRoleChange(u.uid, role)}
-                          className={`px-3 py-1 rounded-md text-xs font-medium border transition-colors ${
-                            u.roles?.includes(role)
-                              ? "bg-[#006a4e] text-white border-[#006a4e]"
-                              : "bg-white text-gray-600 border-gray-200 hover:border-[#006a4e]"
-                          }`}
-                        >
-                          {u.roles?.includes(role) ? `✓ ${role}` : `+ ${role}`}
-                        </button>
-                      ))}
+                    <div className="sticky bottom-0 bg-white pt-4 border-t border-gray-200 flex items-center justify-between">
+                      <div>
+                        {isSubmitted && (
+                          <p className="text-sm text-green-600 font-medium">
+                            Conference Info Saved ✓
+                          </p>
+                        )}
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="px-6 py-2 bg-[#006a4e] text-white text-sm font-medium rounded-lg 
+               hover:bg-[#00543d] transition-colors 
+               disabled:opacity-60 disabled:cursor-not-allowed"
+                      >
+                        {isSubmitting ? "Saving..." : "Save Changes"}
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -433,6 +617,48 @@ function AdminView() {
           </table>
         </div>
       )}
+      {/* Conference Information Table */}
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 mt-6">
+        <h2 className="text-xl font-bold text-[#006a4e]">
+          Conference Information Management
+        </h2>
+        <p className="text-sm text-gray-500 mb-2 pb-3">
+          Update conference details. Changes are saved immediately after
+          clicking “Save Changes”.
+        </p>
+        <div className="flex flex-row gap-2">
+          {info && (
+            <form
+              onSubmit={handleSubmit}
+              onChange={() => {
+                if (isSubmitted) setIsSubmitted(false);
+              }}
+              className="w-full max-w-4xl mx-auto flex flex-col gap-6"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {FIELD_ORDER.map((key) => {
+                  if (!(key in info)) return null;
+                  return renderField(key, (info as any)[key]);
+                })}
+              </div>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-[#006a4e] text-white text-sm font-medium rounded-lg hover:bg-[#00543d] transition-colors"
+              >
+                {isSubmitting ? "Saving..." : "Save Changes"}
+              </button>
+
+              {isSubmitted ? (
+                <p className="text-green-700 text-center">
+                  Conference Info Saved ✓
+                </p>
+              ) : (
+                <></>
+              )}
+            </form>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
