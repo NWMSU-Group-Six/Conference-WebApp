@@ -18,7 +18,6 @@ import {
 import type { GeneralInfo } from "@/models/GeneralInfo";
 import {
   getGeneralInfo,
-  modifyValue,
 } from "@/firebase/services/generalInfoService";
 import { doc, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
@@ -168,8 +167,8 @@ const convertDateStringsToTimestamps = (obj: any): any => {
   return obj;
 };
 
-// ─── Author view ───────────────────────────────────────────────────────────────
-function AuthorView() {
+// ─── User view ─────────────────────────────────────────────────────────────────
+function UserView() {
   const { firebaseUser, userProfile } = useAuth();
   const [subs, setSubs] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
@@ -183,7 +182,7 @@ function AuthorView() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-[#006a4e]">Author Dashboard</h1>
+      <h1 className="text-3xl font-bold text-[#006a4e]">User Dashboard</h1>
       {/* Profile card */}
       <div className="bg-white border border-gray-200 rounded-2xl p-6 flex gap-5 items-center">
         <div className="w-14 h-14 rounded-full bg-[#006a4e] flex items-center justify-center text-white font-bold text-lg">
@@ -591,7 +590,7 @@ function AdminView() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
-                      {(["author", "reviewer", "admin"] as UserRole[]).map((role) => (
+                      {(["user", "reviewer", "admin"] as UserRole[]).map((role) => (
                         <button
                           key={role}
                           onClick={() => handleRoleChange(u.uid, role)}
@@ -680,7 +679,7 @@ export default function Dashboard() {
       <section className="bg-[#003d2a] text-white py-14 px-6">
         <div className="max-w-5xl mx-auto">
           <p className="text-sm font-medium text-[#a7f3d0] mb-1">
-            {isAdmin ? "Admin" : isReviewer ? "Reviewer" : "Author"} Dashboard
+            {isAdmin ? "Admin" : isReviewer ? "Reviewer" : "User"} Dashboard
           </p>
           <h1 className="text-3xl font-bold">Welcome, {displayName}</h1>
         </div>
@@ -691,7 +690,7 @@ export default function Dashboard() {
         {isAdmin && isReviewer && <hr className="border-gray-200" />}
         {isReviewer && <ReviewerView />}
         {isReviewer && <hr className="border-gray-200" />}
-        <AuthorView />
+        <UserView />
       </div>
     </>
   );
