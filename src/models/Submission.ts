@@ -12,6 +12,13 @@ export type SubmissionAuthor = {
   affiliation: string;
 };
 
+export type ReviewRubric = {
+  originality: number;
+  technicalQuality: number;
+  relevance: number;
+  clarity: number;
+};
+
 export type Submission = {
   id?: string;
   title: string;
@@ -30,4 +37,7 @@ export type Submission = {
   submittedAt?: Timestamp;
   assignedReviewer?: string;
   reviewNotes?: string;
+  reviewRubric?: ReviewRubric;
+  reviewScore?: number;
+  reviewedAt?: Timestamp;
 };

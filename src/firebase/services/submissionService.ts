@@ -11,7 +11,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
-import type { Submission } from "@/models/Submission";
+import type { ReviewRubric, Submission } from "@/models/Submission";
 import type { User } from "@/models/User";
 
 const COL = "submissions";
@@ -135,6 +135,26 @@ export const addReviewNotes = async (
   notes: string,
 ): Promise<void> => {
   await updateDoc(doc(db, COL, submissionId), { reviewNotes: notes });
+};
+
+/** Save notes + rubric scoring for a reviewer on a submission. */
+export const saveReviewFeedback = async (
+  submissionId: string,
+  notes: string,
+  rubric: ReviewRubric,
+): Promise<void> => {
+  const reviewScore =
+    rubric.originality +
+    rubric.technicalQuality +
+    rubric.relevance +
+    rubric.clarity;
+
+  await updateDoc(doc(db, COL, submissionId), {
+    reviewNotes: notes,
+    reviewRubric: rubric,
+    reviewScore,
+    reviewedAt: serverTimestamp(),
+  });
 };
 
 /** Update the status of a submission (accept/reject/etc.). */

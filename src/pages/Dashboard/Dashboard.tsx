@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import type { Submission } from "@/models/Submission";
+import type { ReviewRubric, Submission } from "@/models/Submission";
 import type { User, UserRole } from "@/models/User";
 import {
   getSubmissionsByUser,
   getAllSubmissions,
-  addReviewNotes,
+  saveReviewFeedback,
   updateSubmissionStatus,
   assignReviewer,
 } from "@/firebase/services/submissionService";
@@ -29,6 +29,39 @@ const STATUS_COLORS: Record<string, string> = {
   accepted: "bg-green-100 text-green-700",
   rejected: "bg-red-100 text-red-700",
 };
+
+const REVIEW_RUBRIC_FIELDS: Array<{
+  key: keyof ReviewRubric;
+  label: string;
+}> = [
+  { key: "originality", label: "Originality" },
+  { key: "technicalQuality", label: "Technical Quality" },
+  { key: "relevance", label: "Relevance" },
+  { key: "clarity", label: "Clarity" },
+];
+
+const DEFAULT_REVIEW_RUBRIC: ReviewRubric = {
+  originality: 3,
+  technicalQuality: 3,
+  relevance: 3,
+  clarity: 3,
+};
+
+const normalizeReviewRubric = (
+  rubric?: Partial<ReviewRubric>,
+): ReviewRubric => ({
+  originality: rubric?.originality ?? DEFAULT_REVIEW_RUBRIC.originality,
+  technicalQuality:
+    rubric?.technicalQuality ?? DEFAULT_REVIEW_RUBRIC.technicalQuality,
+  relevance: rubric?.relevance ?? DEFAULT_REVIEW_RUBRIC.relevance,
+  clarity: rubric?.clarity ?? DEFAULT_REVIEW_RUBRIC.clarity,
+});
+
+const getRubricTotal = (rubric: ReviewRubric): number =>
+  rubric.originality +
+  rubric.technicalQuality +
+  rubric.relevance +
+  rubric.clarity;
 
 function StatusBadge({ status }: { status: string }) {
   return (
@@ -269,20 +302,103 @@ function ReviewerView() {
   const [subs, setSubs] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
   const [notesMap, setNotesMap] = useState<Record<string, string>>({});
+  const [rubricMap, setRubricMap] = useState<Record<string, ReviewRubric>>({});
   const [saving, setSaving] = useState<string | null>(null);
+  const [saveFeedback, setSaveFeedback] = useState<
+    Record<string, { type: "success" | "error"; text: string }>
+  >({});
 
   useEffect(() => {
     getAllSubmissions()
-      .then((all) =>
-        setSubs(all.filter((s) => s.assignedReviewer === firebaseUser?.uid)),
-      )
+      .then((all) => {
+        const assigned = all.filter(
+          (s) => s.assignedReviewer === firebaseUser?.uid,
+        );
+
+        setSubs(assigned);
+        const initialNotes: Record<string, string> = {};
+        const initialRubric: Record<string, ReviewRubric> = {};
+
+        assigned.forEach((s) => {
+          if (!s.id) return;
+          initialNotes[s.id] = s.reviewNotes ?? "";
+          initialRubric[s.id] = normalizeReviewRubric(s.reviewRubric);
+        });
+
+        setNotesMap(initialNotes);
+        setRubricMap(initialRubric);
+      })
       .finally(() => setLoading(false));
   }, [firebaseUser]);
 
-  const saveNotes = async (id: string) => {
+  const getRubricForSubmission = (submission: Submission): ReviewRubric => {
+    if (!submission.id) return normalizeReviewRubric(submission.reviewRubric);
+    return rubricMap[submission.id] ?? normalizeReviewRubric(submission.reviewRubric);
+  };
+
+  const updateRubricCriterion = (
+    submission: Submission,
+    criterion: keyof ReviewRubric,
+    value: number,
+  ) => {
+    if (!submission.id) return;
+
+    const submissionId = submission.id;
+    setRubricMap((prev) => ({
+      ...prev,
+      [submissionId]: {
+        ...(prev[submissionId] ?? normalizeReviewRubric(submission.reviewRubric)),
+        [criterion]: value,
+      },
+    }));
+  };
+
+  const saveNotes = async (id?: string) => {
+    if (!id) return;
+
     setSaving(id);
-    await addReviewNotes(id, notesMap[id] ?? "");
-    setSaving(null);
+    setSaveFeedback((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+
+    try {
+      const notes = notesMap[id] ?? "";
+      const rubric = rubricMap[id] ?? DEFAULT_REVIEW_RUBRIC;
+      const reviewScore = getRubricTotal(rubric);
+
+      await saveReviewFeedback(id, notes, rubric);
+
+      setSubs((prev) =>
+        prev.map((s) =>
+          s.id === id
+            ? {
+                ...s,
+                reviewNotes: notes,
+                reviewRubric: rubric,
+                reviewScore,
+              }
+            : s,
+        ),
+      );
+
+      setSaveFeedback((prev) => ({
+        ...prev,
+        [id]: { type: "success", text: "Review saved." },
+      }));
+    } catch (error) {
+      console.error("Failed to save review notes", error);
+      const message =
+        error instanceof Error ? error.message : "Could not save notes.";
+
+      setSaveFeedback((prev) => ({
+        ...prev,
+        [id]: { type: "error", text: message },
+      }));
+    } finally {
+      setSaving(null);
+    }
   };
 
   return (
@@ -301,53 +417,111 @@ function ReviewerView() {
         </p>
       ) : (
         <div className="space-y-4">
-          {subs.map((s) => (
-            <div
-              key={s.id}
-              className="bg-white border border-gray-200 rounded-xl p-5"
-            >
-              <div className="flex items-start justify-between gap-4 mb-3">
-                <div>
-                  <p className="font-semibold text-gray-800">{s.title}</p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    {s.abstract?.slice(0, 140)}…
-                  </p>
+          {subs.map((s) => {
+            const rubric = getRubricForSubmission(s);
+            const totalScore = getRubricTotal(rubric);
+
+            return (
+              <div
+                key={s.id}
+                className="bg-white border border-gray-200 rounded-xl p-5"
+              >
+                <div className="flex items-start justify-between gap-4 mb-3">
+                  <div>
+                    <p className="font-semibold text-gray-800">{s.title}</p>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {s.abstract?.slice(0, 140)}…
+                    </p>
+                  </div>
+                  <StatusBadge status={s.status} />
                 </div>
-                <StatusBadge status={s.status} />
+                {s.fileUrl && (
+                  <a
+                    href={s.fileUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm text-[#006a4e] underline mb-3 inline-block"
+                  >
+                    View PDF ↗
+                  </a>
+                )}
+
+                <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
+                  <div className="mb-3 flex items-center justify-between">
+                    <p className="text-xs font-semibold text-gray-700">
+                      Rubric Scoring (1-5)
+                    </p>
+                    <p className="text-xs font-semibold text-[#006a4e]">
+                      Total: {totalScore}/20
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    {REVIEW_RUBRIC_FIELDS.map((field) => (
+                      <label
+                        key={field.key}
+                        className="flex items-center justify-between gap-3 text-xs text-gray-700"
+                      >
+                        <span className="font-medium">{field.label}</span>
+                        <select
+                          value={rubric[field.key]}
+                          onChange={(e) =>
+                            updateRubricCriterion(
+                              s,
+                              field.key,
+                              Number(e.target.value),
+                            )
+                          }
+                          className="border border-gray-200 rounded-md px-2 py-1 text-xs focus:outline-none focus:border-[#006a4e]"
+                        >
+                          {[1, 2, 3, 4, 5].map((score) => (
+                            <option key={score} value={score}>
+                              {score}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-3">
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">
+                    Review Notes
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={s.id ? (notesMap[s.id] ?? "") : (s.reviewNotes ?? "")}
+                    onChange={(e) => {
+                      if (!s.id) return;
+                      const submissionId = s.id;
+                      setNotesMap((m) => ({ ...m, [submissionId]: e.target.value }));
+                    }}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#006a4e]"
+                    placeholder="Enter your review notes…"
+                  />
+                  <button
+                    onClick={() => saveNotes(s.id)}
+                    disabled={saving === s.id || !s.id}
+                    className="mt-2 px-4 py-1.5 bg-[#006a4e] text-white text-xs font-medium rounded-lg hover:bg-[#00543d] transition-colors disabled:opacity-60"
+                  >
+                    {saving === s.id ? "Saving…" : "Save Review"}
+                  </button>
+                  {s.id && saveFeedback[s.id] && (
+                    <p
+                      className={`mt-2 text-xs ${
+                        saveFeedback[s.id].type === "success"
+                          ? "text-green-700"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {saveFeedback[s.id].text}
+                    </p>
+                  )}
+                </div>
               </div>
-              {s.fileUrl && (
-                <a
-                  href={s.fileUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm text-[#006a4e] underline mb-3 inline-block"
-                >
-                  View PDF ↗
-                </a>
-              )}
-              <div className="mt-3">
-                <label className="block text-xs font-semibold text-gray-600 mb-1">
-                  Review Notes
-                </label>
-                <textarea
-                  rows={3}
-                  defaultValue={s.reviewNotes ?? ""}
-                  onChange={(e) =>
-                    setNotesMap((m) => ({ ...m, [s.id!]: e.target.value }))
-                  }
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#006a4e]"
-                  placeholder="Enter your review notes…"
-                />
-                <button
-                  onClick={() => saveNotes(s.id!)}
-                  disabled={saving === s.id}
-                  className="mt-2 px-4 py-1.5 bg-[#006a4e] text-white text-xs font-medium rounded-lg hover:bg-[#00543d] transition-colors disabled:opacity-60"
-                >
-                  {saving === s.id ? "Saving…" : "Save Notes"}
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
