@@ -461,11 +461,10 @@ function AdminView() {
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              tab === t
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === t
                 ? "bg-[#006a4e] text-white"
                 : "bg-white border border-gray-200 text-gray-600 hover:border-[#006a4e]"
-            }`}
+              }`}
           >
             {t === "submissions" ? "All Submissions" : "All Users"}
           </button>
@@ -591,24 +590,19 @@ function AdminView() {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="sticky bottom-0 bg-white pt-4 border-t border-gray-200 flex items-center justify-between">
-                      <div>
-                        {isSubmitted && (
-                          <p className="text-sm text-green-600 font-medium">
-                            Conference Info Saved ✓
-                          </p>
-                        )}
-                      </div>
-
-                      <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="px-6 py-2 bg-[#006a4e] text-white text-sm font-medium rounded-lg 
-               hover:bg-[#00543d] transition-colors 
-               disabled:opacity-60 disabled:cursor-not-allowed"
-                      >
-                        {isSubmitting ? "Saving..." : "Save Changes"}
-                      </button>
+                    <div className="flex gap-2">
+                      {(["author", "reviewer", "admin"] as UserRole[]).map((role) => (
+                        <button
+                          key={role}
+                          onClick={() => handleRoleChange(u.uid, role)}
+                          className={`px-2 py-1 rounded text-[10px] font-bold uppercase transition-colors ${u.roles?.includes(role)
+                              ? "bg-red-100 text-red-600 hover:bg-red-200"
+                              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                            }`}
+                        >
+                          {u.roles?.includes(role) ? `- ${role}` : `+ ${role}`}
+                        </button>
+                      ))}
                     </div>
                   </td>
                 </tr>
