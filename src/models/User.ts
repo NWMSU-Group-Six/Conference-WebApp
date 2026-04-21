@@ -21,5 +21,7 @@ export type User = {
 
   registration?: Registration;
 
+  currentAssignments?: number;
+
   createdAt: Date;
 };
