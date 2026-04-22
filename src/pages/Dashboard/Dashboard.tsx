@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import type { Submission } from "@/models/Submission";
-import type { User, UserRole } from "@/models/User";
+import type { User } from "@/models/User";
 import {
   getSubmissionsByUser,
   getAllSubmissions,
@@ -10,16 +10,9 @@ import {
   updateSubmissionStatus,
   assignReviewer,
 } from "@/firebase/services/submissionService";
-import {
-  getAllUsers,
-  updateUserRole,
-  getReviewers,
-} from "@/firebase/services/userService";
+import { getAllUsers, getReviewers } from "@/firebase/services/userService";
 import type { GeneralInfo } from "@/models/GeneralInfo";
-import {
-  getGeneralInfo,
-  modifyValue,
-} from "@/firebase/services/generalInfoService";
+import { getGeneralInfo } from "@/firebase/services/generalInfoService";
 import { doc, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 
@@ -384,7 +377,7 @@ function AdminView() {
     reload();
   }, []);
 
-  const handleRoleChange = async (uid: string, role: UserRole) => {
+  /*const handleRoleChange = async (uid: string, role: UserRole) => {
     const user = users.find((u) => u.uid === uid);
     if (!user) return;
     const current = user.roles ?? [];
@@ -393,7 +386,7 @@ function AdminView() {
       : [...current, role];
     await updateUserRole(uid, updated);
     reload();
-  };
+  };*/
 
   const handleAssignReviewer = async (subId: string, reviewerUid: string) => {
     if (!reviewerUid) return;

@@ -1,5 +1,4 @@
 import Hero from "@/components/custom/Hero";
-import styles from "./FAQ.module.css";
 import type { FAQ } from "@/models/FAQ";
 
 import {
