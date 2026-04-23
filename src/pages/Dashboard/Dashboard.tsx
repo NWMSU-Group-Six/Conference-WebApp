@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import type { Submission } from "@/models/Submission";
-import type { User } from "@/models/User";
+import type { ReviewRubric, Submission } from "@/models/Submission";
+import type { User, UserRole } from "@/models/User";
 import {
   getSubmissionsByUser,
   getAllSubmissions,
@@ -11,7 +11,11 @@ import {
   assignReviewer,
   unassignReviewer,
 } from "@/firebase/services/submissionService";
-import { getAllUsers, getReviewers } from "@/firebase/services/userService";
+import {
+  getAllUsers,
+  getReviewers,
+  updateUserRole,
+} from "@/firebase/services/userService";
 import type { GeneralInfo } from "@/models/GeneralInfo";
 import { getGeneralInfo } from "@/firebase/services/generalInfoService";
 import { doc, Timestamp, updateDoc } from "firebase/firestore";
@@ -603,7 +607,7 @@ function AdminView() {
     reload();
   }, []);
 
-  /*const handleRoleChange = async (uid: string, role: UserRole) => {
+  const handleRoleChange = async (uid: string, role: UserRole) => {
     const user = users.find((u) => u.uid === uid);
     if (!user) return;
     const current = user.roles ?? [];
@@ -612,7 +616,7 @@ function AdminView() {
       : [...current, role];
     await updateUserRole(uid, updated);
     reload();
-  };*/
+  };
 
   const handleToggleReviewerAssignment = async (
     subId?: string,
