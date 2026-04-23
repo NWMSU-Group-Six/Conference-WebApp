@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import type { ReviewRubric, Submission } from "@/models/Submission";
-import type { User, UserRole } from "@/models/User";
+import type { Submission } from "@/models/Submission";
+import type { User } from "@/models/User";
 import {
   getSubmissionsByUser,
   getAllSubmissions,
@@ -11,15 +11,9 @@ import {
   assignReviewer,
   unassignReviewer,
 } from "@/firebase/services/submissionService";
-import {
-  getAllUsers,
-  updateUserRole,
-  getReviewers,
-} from "@/firebase/services/userService";
+import { getAllUsers, getReviewers } from "@/firebase/services/userService";
 import type { GeneralInfo } from "@/models/GeneralInfo";
-import {
-  getGeneralInfo,
-} from "@/firebase/services/generalInfoService";
+import { getGeneralInfo } from "@/firebase/services/generalInfoService";
 import { doc, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 
@@ -328,7 +322,8 @@ function ReviewerView() {
     getAllSubmissions()
       .then((all) => {
         const assigned = all.filter(
-          (s) => !!reviewerUid && getAssignedReviewerIds(s).includes(reviewerUid),
+          (s) =>
+            !!reviewerUid && getAssignedReviewerIds(s).includes(reviewerUid),
         );
 
         setSubs(assigned);
@@ -359,7 +354,9 @@ function ReviewerView() {
       : undefined;
 
     if (!submission.id) {
-      return normalizeReviewRubric(existingReview?.rubric ?? submission.reviewRubric);
+      return normalizeReviewRubric(
+        existingReview?.rubric ?? submission.reviewRubric,
+      );
     }
 
     return (
@@ -379,7 +376,8 @@ function ReviewerView() {
     setRubricMap((prev) => ({
       ...prev,
       [submissionId]: {
-        ...(prev[submissionId] ?? normalizeReviewRubric(submission.reviewRubric)),
+        ...(prev[submissionId] ??
+          normalizeReviewRubric(submission.reviewRubric)),
         [criterion]: value,
       },
     }));
@@ -531,11 +529,16 @@ function ReviewerView() {
                   </label>
                   <textarea
                     rows={3}
-                    value={s.id ? (notesMap[s.id] ?? "") : (s.reviewNotes ?? "")}
+                    value={
+                      s.id ? (notesMap[s.id] ?? "") : (s.reviewNotes ?? "")
+                    }
                     onChange={(e) => {
                       if (!s.id) return;
                       const submissionId = s.id;
-                      setNotesMap((m) => ({ ...m, [submissionId]: e.target.value }));
+                      setNotesMap((m) => ({
+                        ...m,
+                        [submissionId]: e.target.value,
+                      }));
                     }}
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#006a4e]"
                     placeholder="Enter your review notes…"
@@ -574,7 +577,9 @@ function AdminView() {
   const [subs, setSubs] = useState<Submission[]>([]);
   const [reviewers, setReviewers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [assigningSubmissionId, setAssigningSubmissionId] = useState<string | null>(null);
+  const [assigningSubmissionId, setAssigningSubmissionId] = useState<
+    string | null
+  >(null);
   const [tab, setTab] = useState<"submissions" | "users">("submissions");
   const [info, setInfo] = useState<GeneralInfo | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -598,7 +603,7 @@ function AdminView() {
     reload();
   }, []);
 
-  const handleRoleChange = async (uid: string, role: UserRole) => {
+  /*const handleRoleChange = async (uid: string, role: UserRole) => {
     const user = users.find((u) => u.uid === uid);
     if (!user) return;
     const current = user.roles ?? [];
@@ -607,7 +612,7 @@ function AdminView() {
       : [...current, role];
     await updateUserRole(uid, updated);
     reload();
-  };
+  };*/
 
   const handleToggleReviewerAssignment = async (
     subId?: string,
@@ -689,10 +694,11 @@ function AdminView() {
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === t
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              tab === t
                 ? "bg-[#006a4e] text-white"
                 : "bg-white border border-gray-200 text-gray-600 hover:border-[#006a4e]"
-              }`}
+            }`}
           >
             {t === "submissions" ? "All Submissions" : "All Users"}
           </button>
@@ -741,11 +747,15 @@ function AdminView() {
                   <td className="px-4 py-3">
                     <div className="max-h-28 overflow-y-auto pr-1 space-y-1.5">
                       {reviewers.length === 0 ? (
-                        <p className="text-xs text-gray-400">No reviewers available</p>
+                        <p className="text-xs text-gray-400">
+                          No reviewers available
+                        </p>
                       ) : (
                         reviewers.map((r) => {
                           const assignedReviewerIds = getAssignedReviewerIds(s);
-                          const isAssigned = assignedReviewerIds.includes(r.uid);
+                          const isAssigned = assignedReviewerIds.includes(
+                            r.uid,
+                          );
 
                           return (
                             <label
@@ -839,18 +849,23 @@ function AdminView() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
-                      {(["user", "reviewer", "admin"] as UserRole[]).map((role) => (
-                        <button
-                          key={role}
-                          onClick={() => handleRoleChange(u.uid, role)}
-                          className={`px-2 py-1 rounded text-[10px] font-bold uppercase transition-colors ${u.roles?.includes(role)
-                              ? "bg-red-100 text-red-600 hover:bg-red-200"
-                              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      {(["user", "reviewer", "admin"] as UserRole[]).map(
+                        (role) => (
+                          <button
+                            key={role}
+                            onClick={() => handleRoleChange(u.uid, role)}
+                            className={`px-2 py-1 rounded text-[10px] font-bold uppercase transition-colors ${
+                              u.roles?.includes(role)
+                                ? "bg-red-100 text-red-600 hover:bg-red-200"
+                                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                             }`}
-                        >
-                          {u.roles?.includes(role) ? `- ${role}` : `+ ${role}`}
-                        </button>
-                      ))}
+                          >
+                            {u.roles?.includes(role)
+                              ? `- ${role}`
+                              : `+ ${role}`}
+                          </button>
+                        ),
+                      )}
                     </div>
                   </td>
                 </tr>

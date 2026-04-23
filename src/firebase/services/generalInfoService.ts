@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 
 export const getGeneralInfo = async <GeneralInfo>(
