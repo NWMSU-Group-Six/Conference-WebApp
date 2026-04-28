@@ -48,9 +48,7 @@ const pickReviewerForSubmission = async (
 
   const reviewers = snap.docs
     .map((d) => {
-      const data = d.data() as Omit<User, "uid"> & {
-        currentAssignments?: number;
-      };
+      const data = d.data() as Omit<User, "uid">;
 
       return {
         ...data,
@@ -62,16 +60,7 @@ const pickReviewerForSubmission = async (
 
   if (reviewers.length === 0) return null;
 
-  const minLoad = Math.min(
-    ...reviewers.map((r) => r.currentAssignments ?? 0),
-  );
-
-  const leastLoaded = reviewers.filter(
-    (r) => (r.currentAssignments ?? 0) === minLoad,
-  );
-
-  const selected =
-    leastLoaded[Math.floor(Math.random() * leastLoaded.length)];
+  const selected = reviewers[Math.floor(Math.random() * reviewers.length)];
 
   return selected.uid;
 };
@@ -125,6 +114,10 @@ export const assignReviewer = async (
   if (!submissionSnap.exists()) return;
 
   const submissionData = submissionSnap.data() as Partial<Submission>;
+
+  // Never allow authors to review their own submission.
+  if (submissionData.submittedBy === newReviewerUid) return;
+
   const assignedReviewerIds = getAssignedReviewerIds(submissionData);
 
   if (assignedReviewerIds.includes(newReviewerUid)) return;
