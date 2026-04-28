@@ -10,11 +10,15 @@ import { formatDate } from "@/utils/formatDate";
 import Hero from "@/components/custom/Hero";
 
 export default function Reviewers() {
-  const { firebaseUser } = useAuth();
+  const { firebaseUser, userProfile, loading: authLoading } = useAuth();
   const [reviewers, setReviewers] = useState<User[]>([]);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loadingReviewers, setLoadingReviewers] = useState(true);
   const [loadingDocs, setLoadingDocs] = useState(false);
+
+  const canViewSubmissions = Boolean(
+    userProfile?.roles.includes("reviewer") || userProfile?.roles.includes("admin"),
+  );
 
   useEffect(() => {
     getReviewers()
@@ -23,13 +27,13 @@ export default function Reviewers() {
   }, []);
 
   useEffect(() => {
-    if (!firebaseUser) return;
+    if (!firebaseUser || !canViewSubmissions) return;
     setLoadingDocs(true);
     getDataByCollection<Submission>("submissions")
       .then(setSubmissions)
       .catch(() => setSubmissions([]))
       .finally(() => setLoadingDocs(false));
-  }, [firebaseUser]);
+  }, [firebaseUser, canViewSubmissions]);
 
   return (
     <div className={styles.page}>
@@ -72,8 +76,12 @@ export default function Reviewers() {
           )}
         </section>
 
-        {/* Submitted documents – only visible when logged in */}
-        {firebaseUser && (
+        {/* Submitted documents – restricted to reviewer/admin roles */}
+        {authLoading ? (
+          <section className={styles.section}>
+            <p className={styles.empty}>Loading access rights…</p>
+          </section>
+        ) : canViewSubmissions ? (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>Submitted Papers</h2>
 
@@ -108,7 +116,14 @@ export default function Reviewers() {
               </div>
             )}
           </section>
-        )}
+        ) : firebaseUser ? (
+          <div className={styles.loginPrompt}>
+            <p>
+              Your account can view the public reviewer list, but submitted
+              papers are limited to reviewer and admin accounts.
+            </p>
+          </div>
+        ) : null}
 
         {!firebaseUser && (
           <div className={styles.loginPrompt}>
